@@ -2,10 +2,20 @@ class GridSystem {
     constructor(matrix) {
         this.matrix = matrix;
         this.uiContext = this.#getContext(0, 0, "#000");
-        this.outlineContext = this.#getContext(0, 0, "#444");
+        this.outlineContext = this.#getContext(0, 0, "rgb(255,255,255)");
         this.topContext = this.#getContext(0, 0, "#000000", true);
-        this.cellSize = 10;
-        this.padding = 3;
+        this.cellSize = window.innerHeight / 32;   //10
+        this.padding = 0;     //3
+        this.imgGrass = null;
+        this.imgRailVertical = null;
+        this.imgRailHorizontal = null;
+        this.imgRailTR = null
+        this.imgRailDR = null
+        this.imgRailLD = null
+        this.imgRailUL = null
+        this.imgRailRU = null
+
+        this.mousehover = false
     }
 
     #getCenter(w, h) {
@@ -47,23 +57,115 @@ class GridSystem {
         this.topContext.canvas.style.marginLeft = center.x
         this.topContext.canvas.style.marginTop = center.y;
 
-        for (let row = 0; row < this.matrix.length; row ++) {
-            for (let col = 0; col < this.matrix[row].length; col ++) {
-                if (this.matrix[row][col] == 0){
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix[row].length; col++) {
+                if (rownow == row && colnow == col) {
+                    this.mousehover = true
+                } else {
+                    this.mousehover = false
+                }
+                if (this.matrix[row][col] == 0) {
                     this.outlineContext.fillStyle = "transparent"
+                    this.outlineContext.fillRect(col * (this.cellSize + this.padding),
+                        row * (this.cellSize + this.padding),
+                        this.cellSize, this.cellSize);
                 }
-                if (this.matrix[row][col] == 1){
+                if (this.matrix[row][col] == 3) {
                     this.outlineContext.fillStyle = "#000000"
+                    this.outlineContext.fillRect(col * (this.cellSize + this.padding),
+                        row * (this.cellSize + this.padding),
+                        this.cellSize, this.cellSize);
                 }
-                if (this.matrix[row][col] == 2){
-                    this.outlineContext.fillStyle = "#ff0000"
+                if (this.matrix[row][col] === "railVertical" && this.imgRailVertical != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailVertical, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailVertical, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
                 }
-                if (this.matrix[row][col] == 3){
-                    this.outlineContext.fillStyle = "#fffc00"
+                if (this.matrix[row][col] === "railTR" && this.imgRailTR != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailTR, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailTR, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
                 }
-                this.outlineContext.fillRect(col * (this.cellSize + this.padding),
-                    row * (this.cellSize + this.padding),
-                    this.cellSize, this.cellSize);
+                if (this.matrix[row][col] === "railUL" && this.imgRailUL != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailUL, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailUL, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railRU" && this.imgRailRU != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailRU, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailRU, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railLD" && this.imgRailLD != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailLD, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailLD, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railDR" && this.imgRailDR != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailDR, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailDR, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railHorizontal" && this.imgRailHorizontal != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailHorizontal, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailHorizontal, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] == 1 && this.imgGrass != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgGrass, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgGrass, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+
+
             }
         }
 
@@ -73,31 +175,53 @@ class GridSystem {
     }
 }
 
-let boardX = window.innerWidth *0.5
-let boardY = window.innerHeight*0.5
+let boardX = window.innerWidth * 0.5
+let boardY = window.innerHeight * 0.5
+let rownow = 0
+let colnow = 0
+let row = 0;
+let col = 0;
+let gamestate = "build"
+let buildmode = "create"
+let coin = 100
 
+window.onload = function () {
+    gridSystem.imgGrass = document.getElementById("background");
+    gridSystem.imgRailVertical = document.getElementById("railVertical");
+    gridSystem.imgRailHorizontal = document.getElementById("railHorizontal");
+    gridSystem.imgRailTR = document.getElementById("railTR");
+    gridSystem.imgRailDR = document.getElementById("railDR");
+    gridSystem.imgRailLD = document.getElementById("railLD");
+    gridSystem.imgRailUL = document.getElementById("railUL");
+    gridSystem.imgRailRU = document.getElementById("railRU");
+};
+
+//enum BoardType {
+//RH="",
+
+//}
 let gameBoard = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 0, 1, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 0, 0, 0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [3, 1, 1, 1, 1, 1, 1, "railHorizontal", "railTR", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, "railVertical", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, "railVertical", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, "railVertical", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, "railVertical", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, "railLD", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, "railDR", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
@@ -110,15 +234,142 @@ let gameBoard = [
 
 ];
 
+let rails = ["railVertical", "railHorizontal", "railDR", "railTR","railLD","railUL","railRU"]
+
+let railsInfo = [{
+    left: false,
+    right: false,
+    top: true,
+    down: true,
+    name: "railVertical"
+},
+    {
+        left: true,
+        right: true,
+        top: false,
+        down: false,
+        name: "railHorizontal"
+    },
+    {
+        left: true,
+        right: false,
+        top: false,
+        down: false,
+        name: "railHorizontal"
+    },
+    {
+        left: false,
+        right: true,
+        top: false,
+        down: false,
+        name: "railHorizontal"
+    },
+    {
+        left: false,
+        right: true,
+        top: false,
+        down: true,
+        name: "railDR"
+    },
+    {
+        left: true,
+        right: false,
+        top: false,
+        down: true,
+        name: "railLD"
+    },
+    {
+        left: false,
+        right: true,
+        top: true,
+        down: true,
+        name: "railTR"
+    },
+    {
+        left: true,
+        right: false,
+        top: true,
+        down: false,
+        name: "railUL"
+    },
+    {
+        left: false,
+        right: true,
+        top: true,
+        down: false,
+        name: "railRU"
+    },
+
+]
+
 const gridSystem = new GridSystem(gameBoard);
 
-function fps(){
+function fps() {
     gridSystem.render();
+    //console.log(gamestate)
     setTimeout(fps, 16);      //60fps ca 16
 }
 
-let row = 0;
-let col = 0;
+function switchSquare(event) {
+    if (gamestate == "build") {
+        const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
+        const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
+
+        console.log(`Kästchen bei [${row},${col}] geklickt.`);
+
+        console.log(bfs(gameBoard,
+            0,
+            0,
+            row,
+            col
+        ))
+
+        if (buildmode === "delete") {
+            gridSystem.matrix[row][col] = 1
+        } else {
+            gridSystem.matrix[row][col] = "railVertical"
+        }
+        trainRotation(row, col)
+    }
+}
+
+
+function changeRail(row,col) {
+    let left = rails.includes(gridSystem.matrix[row][col - 1])
+    let right = rails.includes(gridSystem.matrix[row][col + 1])
+    let top = rails.includes(gridSystem.matrix[row - 1][col])
+    let down = rails.includes(gridSystem.matrix[row + 1][col])
+    railsInfo.forEach((rail) => {
+        if (top === rail.top && down === rail.down && left === rail.left && right === rail.right) {
+            gridSystem.matrix[row][col] = rail.name
+        }
+    });
+}
+
+function trainRotation(row, col) {
+    let left = rails.includes(gridSystem.matrix[row][col - 1])
+    let right = rails.includes(gridSystem.matrix[row][col + 1])
+    let top = rails.includes(gridSystem.matrix[row - 1][col])
+    let down = rails.includes(gridSystem.matrix[row + 1][col])
+
+    changeRail(row,col)
+    if(left){
+        changeRail(row,col-1)
+    }
+    if(right){
+        changeRail(row,col+1)
+    }
+    if(top){
+        changeRail(row-1,col)
+    }
+    if(down){
+        changeRail(row+1,col)
+    }
+}
 
 
 function updatePosition() {
@@ -140,72 +391,89 @@ function updatePosition() {
 function handleKeyPress(event) {
     switch (event.keyCode) {
         case 37: // links
-            function links(){
-                if (gridSystem.matrix[row][col-1]== 0) {
-                    setTimeout(links, 50);      //60fps ca 16
-                    gridSystem.matrix[row][col] = 0
-                    col--;
-                    gridSystem.matrix[row][col] = 3;
-                }
+        function links() {
+            if (rails.includes(gridSystem.matrix[row][col - 1])) {
+                setTimeout(links, 50);      //60fps ca 16
+                gridSystem.matrix[row][col] = "railVertical"
+                col--;
+                gridSystem.matrix[row][col] = 3;
             }
+        }
+
             links()
             break;
         case 38: // oben
-            function oben(){
-                if (gridSystem.matrix[row-1][col]== 0) {
-                    setTimeout(oben, 50);      //60fps ca 16
-                    gridSystem.matrix[row][col] = 0
-                    row--;
-                    gridSystem.matrix[row][col] = 3;
-                }
+        function oben() {
+            if (rails.includes(gridSystem.matrix[row - 1][col])) {
+                setTimeout(oben, 50);      //60fps ca 16
+                gridSystem.matrix[row][col] = "railVertical"
+                row--;
+                gridSystem.matrix[row][col] = 3;
             }
-                oben()
-                break;
+        }
+
+            oben()
+            break;
         case 39: // rechts
-            function right(){
-                if (gridSystem.matrix[row][col+1]== 0) {
-                    setTimeout(right, 50);      //60fps ca 16
-                    gridSystem.matrix[row][col] = 0
-                    col++;
-                    gridSystem.matrix[row][col] = 3;
-                }
+        function right() {
+            if (rails.includes(gridSystem.matrix[row][col + 1])) {
+                setTimeout(right, 50);      //60fps ca 16
+                gridSystem.matrix[row][col] = "railVertical"
+                col++;
+                gridSystem.matrix[row][col] = 3;
             }
-                right()
-                break;
+        }
+
+            right()
+            break;
         case 40: // unten
-            function down(){
-                if (gridSystem.matrix[row+1][col]== 0) {
-                    setTimeout(down, 50);      //60fps ca 16
-                    gridSystem.matrix[row][col] = 0
-                    row++;
-                    gridSystem.matrix[row][col] = 3;
-                }
+        function down() {
+            if (rails.includes(gridSystem.matrix[row + 1][col])) {
+                setTimeout(down, 50);      //60fps ca 16
+                gridSystem.matrix[row][col] = "railVertical"
+                row++;
+                gridSystem.matrix[row][col] = 3;
             }
-                down()
-                break;
+        }
+
+            down()
+            break;
     }
-    updatePosition()
+    //updatePosition()
 }
 
 
-document.addEventListener("keydown", handleKeyPress);
+document.addEventListener("keydown", function (event) {
+    if (gamestate === "normal") {
+        handleKeyPress(event)
+    }
+});
 //error
-gridSystem.outlineContext.canvas.addEventListener("click", function(event) {
+gridSystem.outlineContext.canvas.addEventListener('mousedown', function (event) {
+    switchSquare(event)
+});
+
+gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) {
+    if (event.buttons == 1) {
+        event.preventDefault();
+        switchSquare(event)
+    }
+});
+
+
+gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
 
     const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
+    rownow = row
+    colnow = col
+    //console.log(`Kästchen bei [${row},${col}] geklickt.`);
 
-    console.log(`Kästchen bei [${row},${col}] geklickt.`);
-    console.log(bfs(gameBoard,
-        0,
-        0,
-        row,
-        col
-    ))
 });
+
 
 fps()
 
@@ -237,7 +505,7 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
     while (queue.length > 0) {
         const [row, col, dist] = queue.shift(); // Dequeue the first cell in the queue
         if (row === targetRow && col === targetCol) { // Check if the target cell is reached
-            return dist,way; // Return the distance to the target cell
+            return dist, way; // Return the distance to the target cell
         }
         visited.add(`${row},${col}`); // Add the current cell to the visited set
         for (const [moveRow, moveCol] of moves) { // Check all possible moves
@@ -249,7 +517,7 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
                 grid[newRow][newCol] === 0 &&
                 !visited.has(`${newRow},${newCol}`)
             ) {
-                way.push([row,col])
+                way.push(row, col)
                 queue.push([newRow, newCol, dist + 1]); // Add the new cell to the queue with distance incremented by 1
             }
         }
@@ -259,9 +527,22 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
 }
 
 
+function animator(startPosX, startPosY, facing) {
+
+}
 
 
-function animator(startPosX,startPosY,facing){
+function buttonClick() {
+    if (gamestate === "build") {
+        //gridSystem.cellSize = 20
+        //gridSystem.padding = 0
+        gamestate = "normal"
+    } else {
+        //gridSystem.cellSize = 17
+        //gridSystem.padding = 3
+        gamestate = "build"
+    }
+
 
 }
 
