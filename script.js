@@ -14,6 +14,10 @@ class GridSystem {
         this.imgRailLD = null
         this.imgRailUL = null
         this.imgRailRU = null
+        this.imgRailX = null
+        this.imgRailTD = null
+        this.imgRailTU = null
+        this.imgRailTL = null
 
         this.mousehover = false
     }
@@ -120,6 +124,50 @@ class GridSystem {
                             this.cellSize, this.cellSize);
                     }
                 }
+                if (this.matrix[row][col] === "railX" && this.imgRailX != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailX, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailX, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railTL" && this.imgRailTL != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailTL, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailTL, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railTU" && this.imgRailTU != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailTU, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailTU, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "railTD" && this.imgRailTD != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgRailTD, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgRailTD, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
                 if (this.matrix[row][col] === "railLD" && this.imgRailLD != null) {
                     if (this.mousehover) {
                         this.outlineContext.drawImage(this.imgRailLD, (2 + (col * (this.cellSize + this.padding))),
@@ -194,6 +242,10 @@ window.onload = function () {
     gridSystem.imgRailLD = document.getElementById("railLD");
     gridSystem.imgRailUL = document.getElementById("railUL");
     gridSystem.imgRailRU = document.getElementById("railRU");
+    gridSystem.imgRailX = document.getElementById("railX");
+    gridSystem.imgRailTL = document.getElementById("railTL");
+    gridSystem.imgRailTU = document.getElementById("railTU");
+    gridSystem.imgRailTD = document.getElementById("railTD");
 };
 
 //enum BoardType {
@@ -234,7 +286,7 @@ let gameBoard = [
 
 ];
 
-let rails = ["railVertical", "railHorizontal", "railDR", "railTR","railLD","railUL","railRU"]
+let rails = ["railVertical", "railHorizontal", "railDR", "railTR","railLD","railUL","railRU","railX","railTL","railTU","railTD"]
 
 let railsInfo = [{
     left: false,
@@ -298,6 +350,34 @@ let railsInfo = [{
         top: true,
         down: false,
         name: "railRU"
+    },
+    {
+        left: true,
+        right: true,
+        top: true,
+        down: true,
+        name: "railX"
+    },
+    {
+        left: true,
+        right: false,
+        top: true,
+        down: true,
+        name: "railTL"
+    },
+    {
+        left: true,
+        right: true,
+        top: false,
+        down: true,
+        name: "railTD"
+    },
+    {
+        left: true,
+        right: true,
+        top: true,
+        down: false,
+        name: "railTU"
     },
 
 ]
