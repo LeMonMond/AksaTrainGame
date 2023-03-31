@@ -540,6 +540,7 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
     }
 });
 
+window.addEventListener("contextmenu", e => e.preventDefault());
 
 gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
