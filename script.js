@@ -417,11 +417,19 @@ function switchSquare(event) {
 }
 
 
+function checkRails(row, col) {
+    const left = col > 0 && gridSystem.matrix[row][col - 1] && rails.includes(gridSystem.matrix[row][col - 1]);
+    const right = col < gridSystem.matrix[row].length - 1 && gridSystem.matrix[row][col + 1] && rails.includes(gridSystem.matrix[row][col + 1]);
+    const top = row > 0 && gridSystem.matrix[row - 1][col] && rails.includes(gridSystem.matrix[row - 1][col]);
+    const down = row < gridSystem.matrix.length - 1 && gridSystem.matrix[row + 1][col] && rails.includes(gridSystem.matrix[row + 1][col]);
+
+    return { left, right, top, down };
+}
+
+
 function changeRail(row,col) {
-    let left = rails.includes(gridSystem.matrix[row][col - 1])
-    let right = rails.includes(gridSystem.matrix[row][col + 1])
-    let top = rails.includes(gridSystem.matrix[row - 1][col])
-    let down = rails.includes(gridSystem.matrix[row + 1][col])
+    let { left, right, top, down } = checkRails(row, col);
+
     railsInfo.forEach((rail) => {
         if (top === rail.top && down === rail.down && left === rail.left && right === rail.right) {
             gridSystem.matrix[row][col] = rail.name
@@ -430,24 +438,22 @@ function changeRail(row,col) {
 }
 
 function trainRotation(row, col) {
-    let left = rails.includes(gridSystem.matrix[row][col - 1])
-    let right = rails.includes(gridSystem.matrix[row][col + 1])
-    let top = rails.includes(gridSystem.matrix[row - 1][col])
-    let down = rails.includes(gridSystem.matrix[row + 1][col])
+    let { left, right, top, down } = checkRails(row, col);
 
-    changeRail(row,col)
-    if(left){
-        changeRail(row,col-1)
-    }
-    if(right){
-        changeRail(row,col+1)
-    }
-    if(top){
-        changeRail(row-1,col)
-    }
-    if(down){
-        changeRail(row+1,col)
-    }
+
+    changeRail(row, col)
+        if (left) {
+            changeRail(row, col - 1)
+        }
+        if (right) {
+            changeRail(row, col + 1)
+        }
+        if (top) {
+            changeRail(row - 1, col)
+        }
+        if (down) {
+            changeRail(row + 1, col)
+        }
 }
 
 
