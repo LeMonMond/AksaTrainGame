@@ -231,6 +231,7 @@ let col = 0;
 let gamestate = "build"
 let buildmode = "create"
 let coins = 100
+let way = []
 
 window.onload = function () {
     gridSystem.imgGrass = document.getElementById("background");
@@ -390,23 +391,24 @@ function fps() {
 }
 
 function switchSquare(event) {
-    if (gamestate == "build") {
-        const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
+    const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-        const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
-        const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
+    const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
+    const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
 
-        console.log(`Kästchen bei [${row},${col}] geklickt.`);
-
-        console.log(bfs(gameBoard,
+    console.log(`Kästchen bei [${row},${col}] geklickt.`);
+    if(gamestate == "normal") {
+        way = bfs(gameBoard,
             0,
             0,
             row,
             col
-        ))
-
+        )
+        console.log(way)
+    }
+    if (gamestate == "build") {
         if (buildmode === "delete") {
             gridSystem.matrix[row][col] = 1
         } else {
@@ -615,6 +617,9 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
 function animator(startPosX, startPosY, facing) {
 
 }
+
+
+
 
 
 function buttonClick() {
