@@ -232,6 +232,7 @@ let gamestate = "build"
 let buildmode = "create"
 let coins = 100
 let wayToGo = []
+let trainState = "hold"
 
 window.onload = function () {
     gridSystem.imgGrass = document.getElementById("background");
@@ -386,6 +387,7 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render();
+    console.log(trainState)
     setTimeout(fps, 16);      //60fps ca 16
 }
 
@@ -397,15 +399,12 @@ function train(){
     trainRow = a;
     wayToGo.shift();
     if (wayToGo.length > 0){
-        setTimeout(train, 30)};
+        setTimeout(train, 55)
+    }else{
+        trainState = "hold"
+    }
 
 }
-
-
-
-
-
-
 
 function switchSquare(event) {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
@@ -416,7 +415,8 @@ function switchSquare(event) {
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
 
     console.log(`Kästchen bei [${row},${col}] geklickt.`);
-    if(gamestate == "normal") {
+    if(gamestate === "normal" && trainState === "hold") {
+        trainState = "drive"
         bfs(gameBoard,
             trainRow,
             trainCol,
