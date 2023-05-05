@@ -387,12 +387,15 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render();
-    console.log(trainState)
     setTimeout(fps, 16);      //60fps ca 16
 }
 
 function train(){
     const firstObj = wayToGo[0];
+    if (firstObj == undefined){
+        trainState = "hold"
+        return
+    }
     const a = firstObj.row; // 1
     const b = firstObj.col; // 2
     trainCol = b;
