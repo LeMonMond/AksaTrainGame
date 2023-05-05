@@ -18,7 +18,6 @@ class GridSystem {
         this.imgRailTD = null
         this.imgRailTU = null
         this.imgRailTL = null
-
         this.mousehover = false
     }
 
@@ -212,13 +211,14 @@ class GridSystem {
                             this.cellSize, this.cellSize);
                     }
                 }
+                this.outlineContext.fillStyle = "#000000"
+                this.outlineContext.fillRect(trainCol * (this.cellSize + this.padding),
+                    trainRow * (this.cellSize + this.padding),
+                    this.cellSize, this.cellSize);
 
 
             }
         }
-        this.uiContext.font = "20px Courier";
-        this.uiContext.fillStyle = "red";
-        this.uiContext.fillText("TrainGame", 200, 30);
     }
 }
 
@@ -226,12 +226,12 @@ let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
 let rownow = 0
 let colnow = 0
-let row = 0;
-let col = 0;
+let trainRow = 0;
+let trainCol = 0;
 let gamestate = "build"
 let buildmode = "create"
 let coins = 100
-let way = []
+let wayToGo = []
 
 window.onload = function () {
     gridSystem.imgGrass = document.getElementById("background");
@@ -253,7 +253,7 @@ window.onload = function () {
 
 //}
 let gameBoard = [
-    [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
+    ["railHorizontal", 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,],
@@ -386,9 +386,26 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render();
-    //console.log(gamestate)
     setTimeout(fps, 16);      //60fps ca 16
 }
+
+function train(){
+    const firstObj = wayToGo[0];
+    const a = firstObj.row; // 1
+    const b = firstObj.col; // 2
+    trainCol = b;
+    trainRow = a;
+    wayToGo.shift();
+    if (wayToGo.length > 0){
+        setTimeout(train, 30)};
+
+}
+
+
+
+
+
+
 
 function switchSquare(event) {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
@@ -400,13 +417,16 @@ function switchSquare(event) {
 
     console.log(`Kästchen bei [${row},${col}] geklickt.`);
     if(gamestate == "normal") {
-        way = bfs(gameBoard,
-            0,
-            0,
+        bfs(gameBoard,
+            trainRow,
+            trainCol,
             row,
             col
         )
-        console.log(way)
+        train()
+        //trainCol = way[0]
+        //trainRow = way[1]
+
     }
     if (gamestate == "build") {
         if (buildmode === "delete") {
@@ -414,7 +434,7 @@ function switchSquare(event) {
         } else {
             gridSystem.matrix[row][col] = "railVertical"
         }
-        trainRotation(row, col)
+        railRotation(row, col)
     }
 }
 
@@ -439,7 +459,7 @@ function changeRail(row,col) {
     });
 }
 
-function trainRotation(row, col) {
+function railRotation(row, col) {
     let { left, right, top, down } = checkRails(row, col);
 
 
@@ -474,16 +494,16 @@ function updatePosition() {
 }
 
 
-//row links nach rechts
+//trainRow links nach rechts
 function handleKeyPress(event) {
     switch (event.keyCode) {
         case 37: // links
         function links() {
-            if (rails.includes(gridSystem.matrix[row][col - 1])) {
+            if (rails.includes(gridSystem.matrix[trainRow][trainCol - 1])) {
                 setTimeout(links, 50);      //60fps ca 16
-                gridSystem.matrix[row][col] = "railVertical"
-                col--;
-                gridSystem.matrix[row][col] = 3;
+                gridSystem.matrix[trainRow][trainCol] = "railVertical"
+                trainCol--;
+                gridSystem.matrix[trainRow][trainCol] = 3;
             }
         }
 
@@ -491,11 +511,11 @@ function handleKeyPress(event) {
             break;
         case 38: // oben
         function oben() {
-            if (rails.includes(gridSystem.matrix[row - 1][col])) {
+            if (rails.includes(gridSystem.matrix[trainRow - 1][trainCol])) {
                 setTimeout(oben, 50);      //60fps ca 16
-                gridSystem.matrix[row][col] = "railVertical"
-                row--;
-                gridSystem.matrix[row][col] = 3;
+                gridSystem.matrix[trainRow][trainCol] = "railVertical"
+                trainRow--;
+                gridSystem.matrix[trainRow][trainCol] = 3;
             }
         }
 
@@ -503,11 +523,11 @@ function handleKeyPress(event) {
             break;
         case 39: // rechts
         function right() {
-            if (rails.includes(gridSystem.matrix[row][col + 1])) {
+            if (rails.includes(gridSystem.matrix[trainRow][trainCol + 1])) {
                 setTimeout(right, 50);      //60fps ca 16
-                gridSystem.matrix[row][col] = "railVertical"
-                col++;
-                gridSystem.matrix[row][col] = 3;
+                gridSystem.matrix[trainRow][trainCol] = "railVertical"
+                trainCol++;
+                gridSystem.matrix[trainRow][trainCol] = 3;
             }
         }
 
@@ -515,11 +535,11 @@ function handleKeyPress(event) {
             break;
         case 40: // unten
         function down() {
-            if (rails.includes(gridSystem.matrix[row + 1][col])) {
+            if (rails.includes(gridSystem.matrix[trainRow + 1][trainCol])) {
                 setTimeout(down, 50);      //60fps ca 16
-                gridSystem.matrix[row][col] = "railVertical"
-                row++;
-                gridSystem.matrix[row][col] = 3;
+                gridSystem.matrix[trainRow][trainCol] = "railVertical"
+                trainRow++;
+                gridSystem.matrix[trainRow][trainCol] = 3;
             }
         }
 
@@ -532,7 +552,7 @@ function handleKeyPress(event) {
 
 document.addEventListener("keydown", function (event) {
     if (gamestate === "normal") {
-        handleKeyPress(event)
+        //handleKeyPress(event)
     }
 });
 //error
@@ -558,7 +578,7 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
     rownow = row
     colnow = col
-    //console.log(`Kästchen bei [${row},${col}] geklickt.`);
+    //console.log(`Kästchen bei [${trainRow},${trainCol}] geklickt.`);
 
 });
 
@@ -577,23 +597,28 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
         targetCol < 0 || targetCol >= numCols ||
         rails.includes([startRow][startCol]) || rails.includes([targetRow][targetCol])
     ) {
-        return null;
+        return;
     }
 
     // Define a queue for BFS and a visited set to keep track of visited cells
     const queue = [];
-    const way = [];
     const visited = new Set();
-    queue.push([startRow, startCol, 0]); // Add the starting cell to the queue with distance 0
+
+    // Initialize way as an empty array
+    const way = [];
+
+    queue.push([{row: startRow, col: startCol, way}]); // Add the starting cell to the queue with an empty path
 
     // Define the possible moves (up, down, left, right)
     const moves = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
     // Perform BFS
     while (queue.length > 0) {
-        const [row, col, dist] = queue.shift(); // Dequeue the first cell in the queue
+        const curr = queue.shift(); // Dequeue the first cell in the queue
+        const {row, col, way} = curr[curr.length - 1]; // Get the current cell and its path
         if (row === targetRow && col === targetCol) { // Check if the target cell is reached
-            return dist, way; // Return the distance to the target cell
+            wayToGo = way
+            return; // Return the fastest path to the target cell
         }
         visited.add(`${row},${col}`); // Add the current cell to the visited set
         for (const [moveRow, moveCol] of moves) { // Check all possible moves
@@ -602,25 +627,25 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
             if (
                 newRow >= 0 && newRow < numRows &&
                 newCol >= 0 && newCol < numCols &&
-                rails.includes(grid[newRow][newCol])  &&
+                rails.includes(grid[newRow][newCol]) &&
                 !visited.has(`${newRow},${newCol}`)
             ) {
-                way.push(row, col)
-                queue.push([newRow, newCol, dist + 1]); // Add the new cell to the queue with distance incremented by 1
+                const newWay = way.concat([{row: newRow, col: newCol}]); // Add the new cell to the path
+                queue.push([...curr, {row: newRow, col: newCol, way: newWay}]); // Add the new path to the queue
             }
         }
     }
-    return null; // Return null if the target cell is not reachable
+    return; // Return null if the target cell is not reachable
 }
+
+
+
+
 
 
 function animator(startPosX, startPosY, facing) {
 
 }
-
-
-
-
 
 function buttonClick() {
     if (gamestate === "build") {
