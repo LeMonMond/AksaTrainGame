@@ -224,8 +224,6 @@ class GridSystem {
     }
 }
 
-
-
 const coinCountElement = document.getElementById('coin-count');
 let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
@@ -263,12 +261,11 @@ window.onload = function () {
 
 //}
 
-var gameBoardCookie = document.cookie.match('(^|;)\\s*' + 'gameBoard' + '\\s*=\\s*([^;]+)');
-if (gameBoardCookie) {
-    var gameBoardJSON = gameBoardCookie.pop();
+var gameBoardJSON = localStorage.getItem("gameboard");
+if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
-}else{
-    create2DList(window.innerWidth/50,window.innerHeight/15)
+} else {
+    create2DList(window.innerWidth / 50, window.innerHeight/15)
 
 }
 
@@ -283,7 +280,7 @@ function create2DList(rows, cols) {
 }
 
 
-let rails = ["railVertical", "railHorizontal", "railDR", "railTR","railLD","railUL","railRU","railX","railTL","railTU","railTD"]
+let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
 
 let railsInfo = [{
     left: false,
@@ -386,9 +383,9 @@ function fps() {
     setTimeout(fps, 16);      //60fps ca 16
 }
 
-function train(){
+function train() {
     const firstObj = wayToGo[0];
-    if (firstObj == undefined){
+    if (firstObj == undefined) {
         trainState = "hold"
         return
     }
@@ -397,9 +394,9 @@ function train(){
     trainCol = b;
     trainRow = a;
     wayToGo.shift();
-    if (wayToGo.length > 0){
+    if (wayToGo.length > 0) {
         setTimeout(train, 55)
-    }else{
+    } else {
         trainState = "hold"
     }
 
@@ -413,9 +410,7 @@ function switchSquare(event) {
     const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
 
-    console.log(`Kästchen bei [${row},${col}] geklickt.`);
-    console.log(lastClickRow,lastClickCol)
-    if(gamestate === "normal" && trainState === "hold") {
+    if (gamestate === "normal" && trainState === "hold") {
         trainState = "drive"
         bfs(gameBoard,
             trainRow,
@@ -428,19 +423,23 @@ function switchSquare(event) {
         //trainRow = way[1]
 
     }
-    if (gamestate == "build" && coins >= 10) {
+    if (gamestate === "build") {
         if (buildmode === "delete") {
             gridSystem.matrix[row][col] = 1
+
         } else {
-            gridSystem.matrix[row][col] = "railVertical"
-        }
-        if ( lastClickCol !== col || lastClickRow !== row){
-            console.log(lastClickRow,lastClickCol)
-            coins -= 10
+            if (coins >= 10) {
+                gridSystem.matrix[row][col] = "railVertical"
+                railRotation(row, col)
+                if (lastClickCol !== col || lastClickRow !== row) {
+                    coins -= 10
+                    railRotation(row, col)
+                }
+            }
         }
         lastClickRow = row
         lastClickCol = col
-        railRotation(row, col)
+
     }
 }
 
@@ -451,12 +450,12 @@ function checkRails(row, col) {
     const top = row > 0 && gridSystem.matrix[row - 1][col] && rails.includes(gridSystem.matrix[row - 1][col]);
     const down = row < gridSystem.matrix.length - 1 && gridSystem.matrix[row + 1][col] && rails.includes(gridSystem.matrix[row + 1][col]);
 
-    return { left, right, top, down };
+    return {left, right, top, down};
 }
 
 
-function changeRail(row,col) {
-    let { left, right, top, down } = checkRails(row, col);
+function changeRail(row, col) {
+    let {left, right, top, down} = checkRails(row, col);
 
     railsInfo.forEach((rail) => {
         if (top === rail.top && down === rail.down && left === rail.left && right === rail.right) {
@@ -466,22 +465,23 @@ function changeRail(row,col) {
 }
 
 function railRotation(row, col) {
-    let { left, right, top, down } = checkRails(row, col);
+    let {left, right, top, down} = checkRails(row, col);
 
-
-    changeRail(row, col)
-        if (left) {
-            changeRail(row, col - 1)
-        }
-        if (right) {
-            changeRail(row, col + 1)
-        }
-        if (top) {
-            changeRail(row - 1, col)
-        }
-        if (down) {
-            changeRail(row + 1, col)
-        }
+    if (buildmode === "build") {
+        changeRail(row, col)
+    }
+    if (left) {
+        changeRail(row, col - 1)
+    }
+    if (right) {
+        changeRail(row, col + 1)
+    }
+    if (top) {
+        changeRail(row - 1, col)
+    }
+    if (down) {
+        changeRail(row + 1, col)
+    }
 }
 
 
@@ -563,14 +563,30 @@ document.addEventListener("keydown", function (event) {
 });
 //error
 gridSystem.outlineContext.canvas.addEventListener('mousedown', function (event) {
-    switchSquare(event)
+    if (event.buttons == 1) {
+        event.preventDefault();
+        buildmode = "build"
+        switchSquare(event)
+    }
+    if (event.buttons == 2) {
+        buildmode = "delete"
+        event.preventDefault();
+        switchSquare(event)
+    }
 });
 
 gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) {
     if (event.buttons == 1) {
         event.preventDefault();
+        buildmode = "build"
         switchSquare(event)
     }
+    if (event.buttons == 2) {
+        buildmode = "delete"
+        event.preventDefault();
+        switchSquare(event)
+    }
+
 });
 
 window.addEventListener("contextmenu", e => e.preventDefault());
@@ -645,10 +661,6 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
 }
 
 
-
-
-
-
 function animator(startPosX, startPosY, facing) {
 
 }
@@ -667,17 +679,14 @@ function buttonClick() {
 
 }
 
-function save(){
+function save() {
     // Konvertieren des Spielbretts in einen JSON-String
     var gameBoardJSON = JSON.stringify(gameBoard);
-
-// Setzen des Cookies mit dem Spielbrett als Wert
-    document.cookie = "gameBoard=" + gameBoardJSON + "; expires=Thu, 1 Jan 2099 00:00:00 UTC; path=/";
-
+    localStorage.setItem("gameboard", gameBoardJSON);
 }
 
-function coin(){
-    coins+= 11
+function coin() {
+    coins += 1000
 }
 
 
