@@ -229,8 +229,6 @@ let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
 let rownow = 0
 let colnow = 0
-let trainRow = 0;
-let trainCol = 0;
 let gamestate = "build"
 let buildmode = "create"
 let coins = 100
@@ -265,9 +263,12 @@ var gameBoardJSON = localStorage.getItem("gameboard");
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
 } else {
-    create2DList(window.innerWidth / 50, window.innerHeight/15)
+    create2DList(window.innerWidth / 50, window.innerHeight / 15)
 
 }
+
+let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 0;
+let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 0;
 
 function create2DList(rows, cols) {
     for (let i = 0; i < rows; i++) {
@@ -683,6 +684,8 @@ function save() {
     // Konvertieren des Spielbretts in einen JSON-String
     var gameBoardJSON = JSON.stringify(gameBoard);
     localStorage.setItem("gameboard", gameBoardJSON);
+    localStorage.setItem("trainCol", trainCol);
+    localStorage.setItem("trainRow", trainRow);
 }
 
 function coin() {
