@@ -216,9 +216,7 @@ class GridSystem {
                     trainRow * (this.cellSize + this.padding),
                     this.cellSize, this.cellSize);
 
-                this.outlineContext.font = "24px Arial";
-                this.outlineContext.fillStyle = "gold";
-                this.outlineContext.fillText(`Coins: ${coins}`, 10, 50);
+                coinCountElement.innerText = coins;
 
 
             }
@@ -226,6 +224,9 @@ class GridSystem {
     }
 }
 
+
+
+const coinCountElement = document.getElementById('coin-count');
 let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
 let rownow = 0

@@ -3,11 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>AksaTrainGame</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        #coin-count {
+            font-size: 24px;
+        }
+    </style>
 </head>
 <body>
-<button onclick="buttonClick()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >Menü</button>
-<button onclick="save()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >save</button>
-<button onclick="coin()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >coin</button>
+</div>
+<div id="top-bar">
+    <div>
+        <button onclick="buttonClick()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >Menü</button>
+        <button onclick="save()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >save</button>
+        <button onclick="coin()" style="background-color: #4CAF50; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer;" >coin</button>
+
+    </div>
+    <div>
+        Coins: <span id="coin-count">0</span>
+    </div>
+</div>
 
 <script src="script.js"></script>
 
