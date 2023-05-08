@@ -216,6 +216,10 @@ class GridSystem {
                     trainRow * (this.cellSize + this.padding),
                     this.cellSize, this.cellSize);
 
+                this.outlineContext.font = "24px Arial";
+                this.outlineContext.fillStyle = "gold";
+                this.outlineContext.fillText(`Coins: ${coins}`, 10, 50);
+
 
             }
         }
@@ -233,6 +237,8 @@ let buildmode = "create"
 let coins = 100
 let wayToGo = []
 let trainState = "hold"
+let lastClickRow = 0
+let lastClickCol = 0
 
 window.onload = function () {
     gridSystem.imgGrass = document.getElementById("background");
@@ -255,8 +261,6 @@ window.onload = function () {
 //}
 
 var gameBoardCookie = document.cookie.match('(^|;)\\s*' + 'gameBoard' + '\\s*=\\s*([^;]+)');
-
-
 if (gameBoardCookie) {
     var gameBoardJSON = gameBoardCookie.pop();
     var gameBoard = JSON.parse(gameBoardJSON);
@@ -427,6 +431,7 @@ function switchSquare(event) {
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
 
     console.log(`Kästchen bei [${row},${col}] geklickt.`);
+    console.log(lastClickRow,lastClickCol)
     if(gamestate === "normal" && trainState === "hold") {
         trainState = "drive"
         bfs(gameBoard,
@@ -440,12 +445,18 @@ function switchSquare(event) {
         //trainRow = way[1]
 
     }
-    if (gamestate == "build") {
+    if (gamestate == "build" && coins >= 10) {
         if (buildmode === "delete") {
             gridSystem.matrix[row][col] = 1
         } else {
             gridSystem.matrix[row][col] = "railVertical"
         }
+        if ( lastClickCol !== col || lastClickRow !== row){
+            console.log(lastClickRow,lastClickCol)
+            coins -= 10
+        }
+        lastClickRow = row
+        lastClickCol = col
         railRotation(row, col)
     }
 }
@@ -682,7 +693,9 @@ function save(){
 
 }
 
-
+function coin(){
+    coins+= 11
+}
 
 
 
