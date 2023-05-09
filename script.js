@@ -1,9 +1,9 @@
 class GridSystem {
     constructor(matrix) {
         this.matrix = matrix;
-        //this.uiContext = this.#getContext(0, 0, "#000");
+        this.uiContext = this.#getContext(0, 0, "#000");
         this.outlineContext = this.#getContext(0, 0, "rgb(255,255,255)");
-        //this.topContext = this.#getContext(0, 0, "#000000", true);
+        this.topContext = this.#getContext(0, 0, "#000000", true);
         this.cellSize = window.innerWidth / 50;   //10
         this.padding = 0;     //3
         this.imgGrass = null;
@@ -380,6 +380,7 @@ function fps() {
     setTimeout(fps, 16);      //60fps ca 16
 }
 
+
 function train() {
     const firstObj = wayToGo[0];
     if (firstObj == undefined) {
@@ -482,19 +483,7 @@ function railRotation(row, col) {
 }
 
 
-function updatePosition() {
-    let table = document.getElementById("table");
-    table.innerHTML = "";
-    for (let i = 0; i < gridSystem.matrix.length; i++) {
-        let row = document.createElement("tr");
-        for (let j = 0; j < gridSystem.matrix[i].length; j++) {
-            let cell = document.createElement("td");
-            cell.innerHTML = gridSystem.matrix[i][j];
-            row.appendChild(cell);
-        }
-        table.appendChild(row);
-    }
-}
+
 
 
 //trainRow links nach rechts
@@ -592,13 +581,13 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
-    console.log(x,y)
+    //console.log(x,y)
 
     const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
     rownow = row
     colnow = col
-    console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
+    //console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
 
 });
 
@@ -677,14 +666,18 @@ function buttonClick() {
 
 }
 
+
 function save() {
-    // Konvertieren des Spielbretts in einen JSON-String
     var gameBoardJSON = JSON.stringify(gameBoard);
     localStorage.setItem("gameboard", gameBoardJSON);
     localStorage.setItem("trainCol", trainCol);
     localStorage.setItem("trainRow", trainRow);
     localStorage.setItem("coins", coins);
+    setTimeout(save,60000)
+    console.log(new Date(),"Game saved")
 }
+
+save()
 
 function coin() {
     coins += 1000
