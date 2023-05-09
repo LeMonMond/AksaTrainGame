@@ -4,7 +4,7 @@ class GridSystem {
         this.uiContext = this.#getContext(0, 0, "#000");
         this.outlineContext = this.#getContext(0, 0, "rgb(255,255,255)");
         this.topContext = this.#getContext(0, 0, "#000000", true);
-        this.cellSize = window.innerHeight / 32;   //10
+        this.cellSize = window.innerWidth / 50;   //10
         this.padding = 0;     //3
         this.imgGrass = null;
         this.imgRailVertical = null;
@@ -29,19 +29,19 @@ class GridSystem {
     }
 
     #getContext(w, h, color = "#000000", isTransparent = false) {
-        this.canvas = document.createElement("canvas");
+        this.canvas = document.getElementById("canvas");
         this.context = this.canvas.getContext("2d");
-        this.width = this.canvas.width = w;
-        this.height = this.canvas.height = h;
-        this.canvas.style.position = "absolute";
+        //this.width = this.canvas.width = 0;
+        //this.height = this.canvas.height = 0;
+        //this.canvas.style.position = "absolute";
         this.canvas.style.background = color;
         if (isTransparent) {
             this.canvas.style.backgroundColor = "transparent";
         }
         const center = this.#getCenter(w, h);
-        this.canvas.style.marginLeft = center.x
-        this.canvas.style.marginTop = center.y;
-        document.body.appendChild(this.canvas);
+        //this.canvas.style.marginLeft = center.x
+        //this.canvas.style.marginTop = center.y;
+        //document.body.appendChild(this.canvas);
 
         return this.context;
     }
@@ -54,26 +54,23 @@ class GridSystem {
         this.outlineContext.canvas.height = h;
 
         const center = this.#getCenter(w, h);
-        this.outlineContext.canvas.style.marginLeft = center.x
-        this.outlineContext.canvas.style.marginTop = center.y;
+        //this.outlineContext.canvas.style.marginLeft = center.x
+        //this.outlineContext.canvas.style.marginTop = center.y;
 
-        this.topContext.canvas.style.marginLeft = center.x
-        this.topContext.canvas.style.marginTop = center.y;
+        //this.topContext.canvas.style.marginLeft = center.x
+        //this.topContext.canvas.style.marginTop = center.y;
 
         for (let row = 0; row < this.matrix.length; row++) {
             for (let col = 0; col < this.matrix[row].length; col++) {
-                if (rownow == row && colnow == col) {
-                    this.mousehover = true
-                } else {
-                    this.mousehover = false
-                }
-                if (this.matrix[row][col] == 0) {
+                this.mousehover = rownow === row && colnow === col;
+
+                if (this.matrix[row][col] === 0) {
                     this.outlineContext.fillStyle = "transparent"
                     this.outlineContext.fillRect(col * (this.cellSize + this.padding),
                         row * (this.cellSize + this.padding),
                         this.cellSize, this.cellSize);
                 }
-                if (this.matrix[row][col] == 3) {
+                if (this.matrix[row][col] === 3) {
                     this.outlineContext.fillStyle = "#000000"
                     this.outlineContext.fillRect(col * (this.cellSize + this.padding),
                         row * (this.cellSize + this.padding),
@@ -200,7 +197,7 @@ class GridSystem {
                             this.cellSize, this.cellSize);
                     }
                 }
-                if (this.matrix[row][col] == 1 && this.imgGrass != null) {
+                if (this.matrix[row][col] === 1 && this.imgGrass != null) {
                     if (this.mousehover) {
                         this.outlineContext.drawImage(this.imgGrass, (2 + (col * (this.cellSize + this.padding))),
                             (2 + (row * (this.cellSize + this.padding))),
@@ -231,7 +228,6 @@ let rownow = 0
 let colnow = 0
 let gamestate = "build"
 let buildmode = "create"
-let coins = 100
 let wayToGo = []
 let trainState = "hold"
 let lastClickRow = 0
@@ -263,21 +259,21 @@ var gameBoardJSON = localStorage.getItem("gameboard");
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
 } else {
-    create2DList(window.innerWidth / 50, window.innerHeight / 15)
+    create2DList(window.innerWidth/50, window.innerHeight / 15)
 
 }
 
-let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 0;
-let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 0;
+let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
+let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
+let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
 
 function create2DList(rows, cols) {
     for (let i = 0; i < rows; i++) {
         gameBoard[i] = [];
         for (let j = 0; j < cols; j++) {
-            gameBoard[i][j] = 1;
+            gameBoard[i].push(1);
         }
     }
-    return;
 }
 
 
@@ -596,12 +592,13 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
+    console.log(x,y)
 
     const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
     const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
     rownow = row
     colnow = col
-    //console.log(`Kästchen bei [${trainRow},${trainCol}] geklickt.`);
+    console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
 
 });
 
@@ -686,6 +683,7 @@ function save() {
     localStorage.setItem("gameboard", gameBoardJSON);
     localStorage.setItem("trainCol", trainCol);
     localStorage.setItem("trainRow", trainRow);
+    localStorage.setItem("coins", coins);
 }
 
 function coin() {
