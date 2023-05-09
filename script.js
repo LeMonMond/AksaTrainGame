@@ -1,9 +1,9 @@
 class GridSystem {
     constructor(matrix) {
         this.matrix = matrix;
-        this.uiContext = this.#getContext(0, 0, "#000");
+        //this.uiContext = this.#getContext(0, 0, "#000");
         this.outlineContext = this.#getContext(0, 0, "rgb(255,255,255)");
-        this.topContext = this.#getContext(0, 0, "#000000", true);
+        //this.topContext = this.#getContext(0, 0, "#000000", true);
         this.cellSize = window.innerWidth / 50;   //10
         this.padding = 0;     //3
         this.imgGrass = null;
