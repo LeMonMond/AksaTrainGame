@@ -18,6 +18,7 @@ class GridSystem {
         this.imgRailTD = null
         this.imgRailTU = null
         this.imgRailTL = null
+        this.imgTree = null
         this.mousehover = false
     }
 
@@ -186,6 +187,17 @@ class GridSystem {
                             this.cellSize, this.cellSize);
                     }
                 }
+                if (this.matrix[row][col] === "tree" && this.imgTree != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgTree, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgTree, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
                 if (this.matrix[row][col] === "railHorizontal" && this.imgRailHorizontal != null) {
                     if (this.mousehover) {
                         this.outlineContext.drawImage(this.imgRailHorizontal, (2 + (col * (this.cellSize + this.padding))),
@@ -248,12 +260,51 @@ window.onload = function () {
     gridSystem.imgRailTL = document.getElementById("railTL");
     gridSystem.imgRailTU = document.getElementById("railTU");
     gridSystem.imgRailTD = document.getElementById("railTD");
+    gridSystem.imgTree = document.getElementById("tree");
 };
 
 //enum BoardType {
 //RH="",
 
 //}
+
+
+function create2DList(rows, cols) {
+
+    // create an array of allowed positions for 3's
+    const allowedPositions = [];
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            allowedPositions.push([i, j]);
+        }
+    }
+
+    // place 3's at random positions while maintaining distance constraint
+    let numThrees = 0;
+    while (numThrees < Math.floor(rows * cols / 5)) { // set 3's to be around 20% of total cells
+        const index = Math.floor(Math.random() * allowedPositions.length);
+        const [i, j] = allowedPositions[index];
+        gameBoard[i] = gameBoard[i] || [];
+        gameBoard[i][j] = "tree";
+        numThrees++;
+
+        // remove positions that have already been used
+        allowedPositions.splice(index, 1);
+    }
+
+
+
+    // fill remaining cells with 1's
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            if (!gameBoard[i] || !gameBoard[i][j]) {
+                gameBoard[i] = gameBoard[i] || [];
+                gameBoard[i][j] = 1;
+            }
+        }
+    }
+    return gameBoard;
+}
 
 var gameBoardJSON = localStorage.getItem("gameboard");
 if (gameBoardJSON) {
@@ -263,18 +314,16 @@ if (gameBoardJSON) {
 
 }
 
+
+
+
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
 
-function create2DList(rows, cols) {
-    for (let i = 0; i < rows; i++) {
-        gameBoard[i] = [];
-        for (let j = 0; j < cols; j++) {
-            gameBoard[i].push(1);
-        }
-    }
-}
+
+
+
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
@@ -422,11 +471,11 @@ function switchSquare(event) {
 
     }
     if (gamestate === "build") {
-        if (buildmode === "delete") {
+        if (buildmode === "delete" && rails.includes(gridSystem.matrix[row][col])) {
             gridSystem.matrix[row][col] = 1
 
         } else {
-            if (coins >= 10) {
+            if (coins >= 10 && gridSystem.matrix[row][col] === 1) {
                 gridSystem.matrix[row][col] = "railVertical"
                 railRotation(row, col)
                 if (lastClickCol !== col || lastClickRow !== row) {
