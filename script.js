@@ -39,7 +39,7 @@ class GridSystem {
         if (isTransparent) {
             this.canvas.style.backgroundColor = "transparent";
         }
-        const center = this.#getCenter(w, h);
+        //const center = this.#getCenter(w, h);
         //this.canvas.style.marginLeft = center.x
         //this.canvas.style.marginTop = center.y;
         //document.body.appendChild(this.canvas);
@@ -450,12 +450,11 @@ function train() {
 }
 
 function switchSquare(event) {
-    const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
-    const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
+    let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
+    const rowHeight = gridSystem.padding+gridSystem.cellSize;
+    const colWidth = gridSystem.padding+gridSystem.cellSize;
+    const row = Math.floor(mousePos.y / rowHeight);
+    const col = Math.floor(mousePos.x / colWidth);
 
     if (gamestate === "normal" && trainState === "hold") {
         trainState = "drive"
@@ -626,19 +625,42 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
 
 window.addEventListener("contextmenu", e => e.preventDefault());
 
+function  getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect(), // abs. size of element
+        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
+        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
+
+    return {
+        x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+        y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+    }
+}
+
 gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    //console.log(x,y)
+    //const x = event.clientX - rect.left;
+    //const y = event.clientY - rect.top;
+    //console.log(x,y);
 
-    const row = Math.floor(y / (gridSystem.cellSize + gridSystem.padding));
-    const col = Math.floor(x / (gridSystem.cellSize + gridSystem.padding));
-    rownow = row
-    colnow = col
-    //console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
+    let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
 
+
+    const rowHeight = gridSystem.padding+gridSystem.cellSize;
+    const colWidth = gridSystem.padding+gridSystem.cellSize;
+    //console.log(mousePos);
+    const row = Math.floor(mousePos.y / rowHeight);
+    const col = Math.floor(mousePos.x / colWidth);
+
+    const rowFraction = (mousePos.y - row * rowHeight) / gridSystem.cellSize;
+    const colFraction = (mousePos.x - col * colWidth) / gridSystem.cellSize;
+
+    if (rowFraction < 1 && colFraction < 1) {
+        rownow = row;
+        colnow = col;
+        //console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
+    }
 });
+
 
 
 fps()
