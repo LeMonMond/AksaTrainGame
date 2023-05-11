@@ -472,6 +472,7 @@ function switchSquare(event) {
     if (gamestate === "build") {
         if (buildmode === "delete" && rails.includes(gridSystem.matrix[row][col])) {
             gridSystem.matrix[row][col] = 1
+            railRotation(row, col)
 
         } else {
             if (coins >= 10 && gridSystem.matrix[row][col] === 1) {
