@@ -238,6 +238,7 @@ class GridSystem {
                     this.cellSize, this.cellSize);
 
                 coinCountElement.innerText = coins;
+                passengerCount.innerText = passenger;
 
 
             }
@@ -246,6 +247,7 @@ class GridSystem {
 }
 
 const coinCountElement = document.getElementById('coin-count');
+const passengerCount = document.getElementById('passenger-count');
 let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
 let rownow = 0
@@ -343,6 +345,7 @@ if (gameBoardJSON) {
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
+let passenger = JSON.parse(localStorage.getItem("passenger")) ?? 0;
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
@@ -464,6 +467,7 @@ function train() {
         setTimeout(train, 55)
     } else {
         trainState = "hold"
+        stationCheck()
     }
 
 }
@@ -519,6 +523,18 @@ function checkRails(row, col) {
     return {left, right, top, down};
 }
 
+function checkStations(row, col) {
+    const left = col > 0 && gridSystem.matrix[row][col - 1] && gridSystem.matrix[row][col - 1] === "trainStation"
+    const right = col < gridSystem.matrix[row].length - 1 && gridSystem.matrix[row][col + 1] && gridSystem.matrix[row][col + 1] === "trainStation"
+    const top = row > 0 && gridSystem.matrix[row - 1][col] && gridSystem.matrix[row - 1][col] === "trainStation"
+    const down = row < gridSystem.matrix.length - 1 && gridSystem.matrix[row + 1][col] && gridSystem.matrix[row + 1][col] === "trainStation"
+    if (left || right || top || down) {
+        return true
+    } else {
+        return false
+    }
+}
+
 
 function changeRail(row, col) {
     let {left, right, top, down} = checkRails(row, col);
@@ -550,6 +566,13 @@ function railRotation(row, col) {
     }
 }
 
+
+function stationCheck() {
+    if(checkStations(trainRow, trainCol)){
+
+    }
+
+}
 
 //trainRow links nach rechts
 function handleKeyPress(event) {
@@ -760,6 +783,7 @@ function save() {
     localStorage.setItem("trainCol", trainCol);
     localStorage.setItem("trainRow", trainRow);
     localStorage.setItem("coins", coins);
+    localStorage.setItem("passenger", passenger);
     setTimeout(save, 60000)
     console.log(new Date(), "Game saved")
 }
@@ -768,6 +792,7 @@ save()
 
 function coin() {
     coins += 1000
+    passenger += 1
 }
 
 
