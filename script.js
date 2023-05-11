@@ -19,6 +19,7 @@ class GridSystem {
         this.imgRailTU = null
         this.imgRailTL = null
         this.imgTree = null
+        this.imgTrainStation = null
         this.mousehover = false
     }
 
@@ -117,6 +118,17 @@ class GridSystem {
                             this.cellSize - 4, this.cellSize - 4);
                     } else {
                         this.outlineContext.drawImage(this.imgRailRU, (col * (this.cellSize + this.padding)),
+                            (row * (this.cellSize + this.padding)),
+                            this.cellSize, this.cellSize);
+                    }
+                }
+                if (this.matrix[row][col] === "trainStation" && this.imgTrainStation != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(this.imgTrainStation, (2 + (col * (this.cellSize + this.padding))),
+                            (2 + (row * (this.cellSize + this.padding))),
+                            this.cellSize - 4, this.cellSize - 4);
+                    } else {
+                        this.outlineContext.drawImage(this.imgTrainStation, (col * (this.cellSize + this.padding)),
                             (row * (this.cellSize + this.padding)),
                             this.cellSize, this.cellSize);
                     }
@@ -261,6 +273,7 @@ window.onload = function () {
     gridSystem.imgRailTU = document.getElementById("railTU");
     gridSystem.imgRailTD = document.getElementById("railTD");
     gridSystem.imgTree = document.getElementById("tree");
+    gridSystem.imgTrainStation = document.getElementById("trainStation");
 };
 
 //enum BoardType {
@@ -271,13 +284,7 @@ window.onload = function () {
 
 function create2DList(rows, cols) {
 
-    // calculate the number of cells in the game board
-    const numCells = rows * cols;
-
-    // calculate the number of cells we want to fill with 2's (1% of the game board)
-    const numTwos = Math.floor(numCells * 0.01);
-
-    // create an array of allowed positions for 3's and 2's
+    // create an array of allowed positions for 3's
     const allowedPositions = [];
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -285,24 +292,31 @@ function create2DList(rows, cols) {
         }
     }
 
-    // place 3's and 2's at random positions while maintaining distance constraint
+    // place 3's at random positions while maintaining distance constraint
     let numThrees = 0;
-    let numTwosPlaced = 0;
-    while (numThrees < Math.floor(numCells / 5) && numTwosPlaced < numTwos) { // set 3's to be around 20% of total cells
+    while (numThrees < Math.floor(rows * cols / 5)) { // set 3's to be around 20% of total cells
         const index = Math.floor(Math.random() * allowedPositions.length);
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
-        if (numTwosPlaced < numTwos) {
-            gameBoard[i][j] = 2;
-            numTwosPlaced++;
-        } else {
-            gameBoard[i][j] = "tree";
-            numThrees++;
-        }
+        gameBoard[i][j] = "tree";
+        numThrees++;
 
         // remove positions that have already been used
         allowedPositions.splice(index, 1);
     }
+
+    let numTwos = 0;
+    while (numTwos < Math.floor(rows * cols / 50)) { // set 3's to be around 20% of total cells
+        const index = Math.floor(Math.random() * allowedPositions.length);
+        const [i, j] = allowedPositions[index];
+        gameBoard[i] = gameBoard[i] || [];
+        gameBoard[i][j] = "trainStation";
+        numTwos++;
+
+        // remove positions that have already been used
+        allowedPositions.splice(index, 1);
+    }
+
 
     // fill remaining cells with 1's
     for (let i = 0; i < rows; i++) {
@@ -321,20 +335,14 @@ var gameBoardJSON = localStorage.getItem("gameboard");
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
 } else {
-    create2DList(window.innerWidth/50, window.innerHeight / 15)
+    create2DList(window.innerWidth / 50, window.innerHeight / 15)
 
 }
-
-
 
 
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
-
-
-
-
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
@@ -462,8 +470,8 @@ function train() {
 
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
-    const rowHeight = gridSystem.padding+gridSystem.cellSize;
-    const colWidth = gridSystem.padding+gridSystem.cellSize;
+    const rowHeight = gridSystem.padding + gridSystem.cellSize;
+    const colWidth = gridSystem.padding + gridSystem.cellSize;
     const row = Math.floor(mousePos.y / rowHeight);
     const col = Math.floor(mousePos.x / colWidth);
 
@@ -541,9 +549,6 @@ function railRotation(row, col) {
         changeRail(row + 1, col)
     }
 }
-
-
-
 
 
 //trainRow links nach rechts
@@ -637,7 +642,7 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
 
 window.addEventListener("contextmenu", e => e.preventDefault());
 
-function  getMousePos(canvas, evt) {
+function getMousePos(canvas, evt) {
     const rect = canvas.getBoundingClientRect(), // abs. size of element
         scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
         scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
@@ -657,8 +662,8 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
 
 
-    const rowHeight = gridSystem.padding+gridSystem.cellSize;
-    const colWidth = gridSystem.padding+gridSystem.cellSize;
+    const rowHeight = gridSystem.padding + gridSystem.cellSize;
+    const colWidth = gridSystem.padding + gridSystem.cellSize;
     //console.log(mousePos);
     const row = Math.floor(mousePos.y / rowHeight);
     const col = Math.floor(mousePos.x / colWidth);
@@ -672,7 +677,6 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
         //console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
     }
 });
-
 
 
 fps()
@@ -756,8 +760,8 @@ function save() {
     localStorage.setItem("trainCol", trainCol);
     localStorage.setItem("trainRow", trainRow);
     localStorage.setItem("coins", coins);
-    setTimeout(save,60000)
-    console.log(new Date(),"Game saved")
+    setTimeout(save, 60000)
+    console.log(new Date(), "Game saved")
 }
 
 save()
