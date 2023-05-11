@@ -271,7 +271,13 @@ window.onload = function () {
 
 function create2DList(rows, cols) {
 
-    // create an array of allowed positions for 3's
+    // calculate the number of cells in the game board
+    const numCells = rows * cols;
+
+    // calculate the number of cells we want to fill with 2's (1% of the game board)
+    const numTwos = Math.floor(numCells * 0.01);
+
+    // create an array of allowed positions for 3's and 2's
     const allowedPositions = [];
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -279,20 +285,24 @@ function create2DList(rows, cols) {
         }
     }
 
-    // place 3's at random positions while maintaining distance constraint
+    // place 3's and 2's at random positions while maintaining distance constraint
     let numThrees = 0;
-    while (numThrees < Math.floor(rows * cols / 5)) { // set 3's to be around 20% of total cells
+    let numTwosPlaced = 0;
+    while (numThrees < Math.floor(numCells / 5) && numTwosPlaced < numTwos) { // set 3's to be around 20% of total cells
         const index = Math.floor(Math.random() * allowedPositions.length);
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
-        gameBoard[i][j] = "tree";
-        numThrees++;
+        if (numTwosPlaced < numTwos) {
+            gameBoard[i][j] = 2;
+            numTwosPlaced++;
+        } else {
+            gameBoard[i][j] = "tree";
+            numThrees++;
+        }
 
         // remove positions that have already been used
         allowedPositions.splice(index, 1);
     }
-
-
 
     // fill remaining cells with 1's
     for (let i = 0; i < rows; i++) {
@@ -305,6 +315,7 @@ function create2DList(rows, cols) {
     }
     return gameBoard;
 }
+
 
 var gameBoardJSON = localStorage.getItem("gameboard");
 if (gameBoardJSON) {
@@ -426,7 +437,7 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render();
-    setTimeout(fps, 16);      //60fps ca 16
+    setTimeout(fps, 30);      //60fps ca 16
 }
 
 
