@@ -6,63 +6,36 @@ class GridSystem {
         this.topContext = this.#getContext(0, 0, "#000000", true);
         this.cellSize = window.innerWidth / 50;   //10
         this.padding = 0;     //3
-        this.imgGrass = null;
-        this.imgRailVertical = null;
-        this.imgRailHorizontal = null;
-        this.imgRailTR = null
-        this.imgRailDR = null
-        this.imgRailLD = null
-        this.imgRailUL = null
-        this.imgRailRU = null
-        this.imgRailX = null
-        this.imgRailTD = null
-        this.imgRailTU = null
-        this.imgRailTL = null
-        this.imgTree = null
-        this.imgTrainStation = null
-        this.mousehover = false
-
         this.imgGrass = new Image();
-        this.imgGrass.src = "grass.png";
-
         this.imgRailVertical = new Image();
-        this.imgRailVertical.src = "railVertical.png";
-
-        this.imgRailTR = new Image();
-        this.imgRailTR.src = "railTR.png";
-
-        this.imgRailUL = new Image();
-        this.imgRailUL.src = "railUL.png";
-
-        this.imgRailRU = new Image();
-        this.imgRailRU.src = "railRU.png";
-
-        this.imgTrainStation = new Image();
-        this.imgTrainStation.src = "trainStation.png";
-
-        this.imgRailX = new Image();
-        this.imgRailX.src = "railX.png";
-
-        this.imgRailTL = new Image();
-        this.imgRailTL.src = "railTL.png";
-
-        this.imgRailTU = new Image();
-        this.imgRailTU.src = "railTU.png";
-
-        this.imgRailTD = new Image();
-        this.imgRailTD.src = "railTD.png";
-
-        this.imgRailLD = new Image();
-        this.imgRailLD.src = "railLD.png";
-
-        this.imgRailDR = new Image();
-        this.imgRailDR.src = "railDR.png";
-
-        this.imgTree = new Image();
-        this.imgTree.src = "tree(placeholder).png";
-
         this.imgRailHorizontal = new Image();
+        this.imgRailTR = new Image();
+        this.imgRailDR = new Image();
+        this.imgRailLD = new Image();
+        this.imgRailUL = new Image();
+        this.imgRailRU = new Image();
+        this.imgRailX = new Image();
+        this.imgRailTD = new Image();
+        this.imgRailTU = new Image();
+        this.imgRailTL = new Image();
+        this.imgTree = new Image();
+        this.imgTrainStation = new Image();
+        this.mousehover = false;
+
+        this.imgGrass.src = "grass.png";
+        this.imgRailVertical.src = "railVertical.png";
         this.imgRailHorizontal.src = "railHorizontal.png";
+        this.imgRailTR.src = "railTR.png";
+        this.imgRailDR.src = "railDR.png";
+        this.imgRailLD.src = "railLD.png";
+        this.imgRailUL.src = "railUL.png";
+        this.imgRailRU.src = "railRU.png";
+        this.imgRailX.src = "railX.png";
+        this.imgRailTD.src = "railTD.png";
+        this.imgRailTU.src = "railTU.png";
+        this.imgRailTL.src = "railTL.png";
+        this.imgTree.src = "tree(placeholder).png";
+        this.imgTrainStation.src = "trainStation.png";
 
         this.imgMap = {
             0: null, // Transparent
@@ -84,92 +57,89 @@ class GridSystem {
         };
     }
 
-        #getCenter(w, h)
-        {
-            return {
-                x: window.innerWidth / 2 - w / 2 + "px",
-                y: window.innerHeight / 2 - h / 2 + "px"
-            };
+    #getCenter(w, h) {
+        return {
+            x: window.innerWidth / 2 - w / 2 + "px",
+            y: window.innerHeight / 2 - h / 2 + "px"
+        };
+    }
+
+    #getContext(w, h, color = "#000000", isTransparent = false) {
+        this.canvas = document.getElementById("canvas");
+        this.context = this.canvas.getContext("2d");
+        //this.width = this.canvas.width = 0;
+        //this.height = this.canvas.height = 0;
+        //this.canvas.style.position = "absolute";
+        this.canvas.style.background = color;
+        if (isTransparent) {
+            this.canvas.style.backgroundColor = "transparent";
         }
+        //const center = this.#getCenter(w, h);
+        //this.canvas.style.marginLeft = center.x
+        //this.canvas.style.marginTop = center.y;
+        //document.body.appendChild(this.canvas);
 
-        #getContext(w, h, color = "#000000", isTransparent = false){
-            this.canvas = document.getElementById("canvas");
-            this.context = this.canvas.getContext("2d");
-            //this.width = this.canvas.width = 0;
-            //this.height = this.canvas.height = 0;
-            //this.canvas.style.position = "absolute";
-            this.canvas.style.background = color;
-            if (isTransparent) {
-                this.canvas.style.backgroundColor = "transparent";
-            }
-            //const center = this.#getCenter(w, h);
-            //this.canvas.style.marginLeft = center.x
-            //this.canvas.style.marginTop = center.y;
-            //document.body.appendChild(this.canvas);
-
-            return this.context;
-        }
+        return this.context;
+    }
 
 
-        render()
-        {
+    render() {
+        const w = (this.cellSize + this.padding) * this.matrix[0].length - this.padding;
+        const h = (this.cellSize + this.padding) * this.matrix.length - this.padding;
 
-            const w = (this.cellSize + this.padding) * this.matrix[0].length - this.padding;
-            const h = (this.cellSize + this.padding) * this.matrix.length - this.padding;
+        this.outlineContext.canvas.width = w;
+        this.outlineContext.canvas.height = h;
 
-            this.outlineContext.canvas.width = w;
-            this.outlineContext.canvas.height = h;
+        const center = this.#getCenter(w, h);
+        // this.outlineContext.canvas.style.marginLeft = center.x
+        // this.outlineContext.canvas.style.marginTop = center.y;
+        // this.topContext.canvas.style.marginLeft = center.x
+        // this.topContext.canvas.style.marginTop = center.y;
 
-            const center = this.#getCenter(w, h);
-            // this.outlineContext.canvas.style.marginLeft = center.x
-            // this.outlineContext.canvas.style.marginTop = center.y;
-            // this.topContext.canvas.style.marginLeft = center.x
-            // this.topContext.canvas.style.marginTop = center.y;
+        for (let row = 0; row < this.matrix.length; row++) {
+            for (let col = 0; col < this.matrix[row].length; col++) {
+                this.mousehover = rownow === row && colnow === col;
 
-            for (let row = 0; row < this.matrix.length; row++) {
-                for (let col = 0; col < this.matrix[row].length; col++) {
-                    this.mousehover = rownow === row && colnow === col;
+                const cellType = this.matrix[row][col];
 
-                    const cellType = this.matrix[row][col];
-
-                    if (cellType === 0) {
-                        this.outlineContext.fillStyle = "transparent";
-                    } else if (cellType === 3) {
-                        this.outlineContext.fillStyle = "#000000";
-                    } else if (this.imgMap[cellType] != null) {
-                        if (this.mousehover) {
-                            this.outlineContext.drawImage(
-                                this.imgMap[cellType],
-                                2 + col * (this.cellSize + this.padding),
-                                2 + row * (this.cellSize + this.padding),
-                                this.cellSize - 4,
-                                this.cellSize - 4
-                            );
-                        } else {
-                            this.outlineContext.drawImage(
-                                this.imgMap[cellType],
-                                col * (this.cellSize + this.padding),
-                                row * (this.cellSize + this.padding),
-                                this.cellSize,
-                                this.cellSize
-                            );
-                        }
-                    }
-
-                    if (cellType !== 1) {
-                        this.outlineContext.fillRect(
-                            trainCol * (this.cellSize + this.padding),
-                            trainRow * (this.cellSize + this.padding),
+                if (cellType === 0) {
+                    this.outlineContext.fillStyle = "transparent";
+                } else if (cellType === 3) {
+                    this.outlineContext.fillStyle = "#000000";
+                } else if (this.imgMap[cellType] != null) {
+                    if (this.mousehover) {
+                        this.outlineContext.drawImage(
+                            this.imgMap[cellType],
+                            2 + col * (this.cellSize + this.padding),
+                            2 + row * (this.cellSize + this.padding),
+                            this.cellSize - 4,
+                            this.cellSize - 4
+                        );
+                    } else {
+                        this.outlineContext.drawImage(
+                            this.imgMap[cellType],
+                            col * (this.cellSize + this.padding),
+                            row * (this.cellSize + this.padding),
                             this.cellSize,
                             this.cellSize
                         );
                     }
-
-                    coinCountElement.innerText = coins;
-                    passengerCount.innerText = passenger;
                 }
+
+                if (cellType !== 1) {
+                    this.outlineContext.fillRect(
+                        trainCol * (this.cellSize + this.padding),
+                        trainRow * (this.cellSize + this.padding),
+                        this.cellSize,
+                        this.cellSize
+                    );
+                }
+
+                coinCountElement.innerText = coins;
+                passengerCount.innerText = passenger;
             }
         }
+    }
 }
 
 const coinCountElement = document.getElementById('coin-count');
@@ -185,7 +155,6 @@ let trainState = "hold"
 let lastClickRow = 0
 let lastClickCol = 0
 let gameBoard = []
-
 
 
 //enum BoardType {
@@ -243,11 +212,15 @@ function create2DList(rows, cols) {
 }
 
 
-var gameBoardJSON = localStorage.getItem("gameboard");
+var
+    gameBoardJSON = localStorage.getItem("gameboard");
+
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
 } else {
-    create2DList(window.innerWidth / 50, window.innerHeight / 15)
+    create2DList(window.innerWidth / 50,
+        window.innerHeight / 15
+    )
 
 }
 
@@ -260,7 +233,7 @@ let passenger = JSON.parse(localStorage.getItem("passenger")) ?? 0;
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
 
-let trainStation = ["redTrainStation","blueTrainStation","yellowTrainStation"]
+let trainStation = ["redTrainStation", "blueTrainStation", "yellowTrainStation"]
 
 let railsInfo = [{
     left: false,
@@ -358,11 +331,10 @@ let railsInfo = [{
 
 const gridSystem = new GridSystem(gameBoard);
 
-function fps() {
-    gridSystem.render();
-    setTimeout(fps, 30);      //60fps ca 16
+function fps(){
+    gridSystem.render()
+    setTimeout(fps,16)
 }
-
 
 function train() {
     const firstObj = wayToGo[0];
@@ -383,6 +355,8 @@ function train() {
     }
 
 }
+
+fps()
 
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
@@ -480,7 +454,7 @@ function railRotation(row, col) {
 
 
 function stationCheck() {
-    if(checkStations(trainRow, trainCol)){
+    if (checkStations(trainRow, trainCol)) {
         console.log(true)
     }
 
@@ -613,8 +587,6 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     }
 });
 
-
-fps()
 
 function bfs(grid, startRow, startCol, targetRow, targetCol) {
     const numRows = grid.length;
