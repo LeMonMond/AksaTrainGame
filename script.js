@@ -21,229 +21,155 @@ class GridSystem {
         this.imgTree = null
         this.imgTrainStation = null
         this.mousehover = false
-    }
 
-    #getCenter(w, h) {
-        return {
-            x: window.innerWidth / 2 - w / 2 + "px",
-            y: window.innerHeight / 2 - h / 2 + "px"
+        this.imgGrass = new Image();
+        this.imgGrass.src = "grass.png";
+
+        this.imgRailVertical = new Image();
+        this.imgRailVertical.src = "railVertical.png";
+
+        this.imgRailTR = new Image();
+        this.imgRailTR.src = "railTR.png";
+
+        this.imgRailUL = new Image();
+        this.imgRailUL.src = "railUL.png";
+
+        this.imgRailRU = new Image();
+        this.imgRailRU.src = "railRU.png";
+
+        this.imgTrainStation = new Image();
+        this.imgTrainStation.src = "trainStation.png";
+
+        this.imgRailX = new Image();
+        this.imgRailX.src = "railX.png";
+
+        this.imgRailTL = new Image();
+        this.imgRailTL.src = "railTL.png";
+
+        this.imgRailTU = new Image();
+        this.imgRailTU.src = "railTU.png";
+
+        this.imgRailTD = new Image();
+        this.imgRailTD.src = "railTD.png";
+
+        this.imgRailLD = new Image();
+        this.imgRailLD.src = "railLD.png";
+
+        this.imgRailDR = new Image();
+        this.imgRailDR.src = "railDR.png";
+
+        this.imgTree = new Image();
+        this.imgTree.src = "tree(placeholder).png";
+
+        this.imgRailHorizontal = new Image();
+        this.imgRailHorizontal.src = "railHorizontal.png";
+
+        this.imgMap = {
+            0: null, // Transparent
+            1: this.imgGrass, // Grass
+            3: null, // Black
+            railVertical: this.imgRailVertical,
+            railTR: this.imgRailTR,
+            railUL: this.imgRailUL,
+            railRU: this.imgRailRU,
+            trainStation: this.imgTrainStation,
+            railX: this.imgRailX,
+            railTL: this.imgRailTL,
+            railTU: this.imgRailTU,
+            railTD: this.imgRailTD,
+            railLD: this.imgRailLD,
+            railDR: this.imgRailDR,
+            tree: this.imgTree,
+            railHorizontal: this.imgRailHorizontal
         };
     }
 
-    #getContext(w, h, color = "#000000", isTransparent = false) {
-        this.canvas = document.getElementById("canvas");
-        this.context = this.canvas.getContext("2d");
-        //this.width = this.canvas.width = 0;
-        //this.height = this.canvas.height = 0;
-        //this.canvas.style.position = "absolute";
-        this.canvas.style.background = color;
-        if (isTransparent) {
-            this.canvas.style.backgroundColor = "transparent";
+        #getCenter(w, h)
+        {
+            return {
+                x: window.innerWidth / 2 - w / 2 + "px",
+                y: window.innerHeight / 2 - h / 2 + "px"
+            };
         }
-        //const center = this.#getCenter(w, h);
-        //this.canvas.style.marginLeft = center.x
-        //this.canvas.style.marginTop = center.y;
-        //document.body.appendChild(this.canvas);
 
-        return this.context;
-    }
+        #getContext(w, h, color = "#000000", isTransparent = false){
+            this.canvas = document.getElementById("canvas");
+            this.context = this.canvas.getContext("2d");
+            //this.width = this.canvas.width = 0;
+            //this.height = this.canvas.height = 0;
+            //this.canvas.style.position = "absolute";
+            this.canvas.style.background = color;
+            if (isTransparent) {
+                this.canvas.style.backgroundColor = "transparent";
+            }
+            //const center = this.#getCenter(w, h);
+            //this.canvas.style.marginLeft = center.x
+            //this.canvas.style.marginTop = center.y;
+            //document.body.appendChild(this.canvas);
 
-    render() {
-        const w = (this.cellSize + this.padding) * this.matrix[0].length - (this.padding);
-        const h = (this.cellSize + this.padding) * this.matrix.length - (this.padding);
-
-        this.outlineContext.canvas.width = w;
-        this.outlineContext.canvas.height = h;
-
-        const center = this.#getCenter(w, h);
-        //this.outlineContext.canvas.style.marginLeft = center.x
-        //this.outlineContext.canvas.style.marginTop = center.y;
-
-        //this.topContext.canvas.style.marginLeft = center.x
-        //this.topContext.canvas.style.marginTop = center.y;
-
-        for (let row = 0; row < this.matrix.length; row++) {
-            for (let col = 0; col < this.matrix[row].length; col++) {
-                this.mousehover = rownow === row && colnow === col;
-
-                if (this.matrix[row][col] === 0) {
-                    this.outlineContext.fillStyle = "transparent"
-                    this.outlineContext.fillRect(col * (this.cellSize + this.padding),
-                        row * (this.cellSize + this.padding),
-                        this.cellSize, this.cellSize);
-                }
-                if (this.matrix[row][col] === 3) {
-                    this.outlineContext.fillStyle = "#000000"
-                    this.outlineContext.fillRect(col * (this.cellSize + this.padding),
-                        row * (this.cellSize + this.padding),
-                        this.cellSize, this.cellSize);
-                }
-                if (this.matrix[row][col] === "railVertical" && this.imgRailVertical != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailVertical, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailVertical, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railTR" && this.imgRailTR != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailTR, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailTR, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railUL" && this.imgRailUL != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailUL, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailUL, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railRU" && this.imgRailRU != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailRU, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailRU, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "trainStation" && this.imgTrainStation != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgTrainStation, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgTrainStation, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railX" && this.imgRailX != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailX, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailX, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railTL" && this.imgRailTL != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailTL, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailTL, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railTU" && this.imgRailTU != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailTU, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailTU, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railTD" && this.imgRailTD != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailTD, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailTD, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railLD" && this.imgRailLD != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailLD, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailLD, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railDR" && this.imgRailDR != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailDR, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailDR, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "tree" && this.imgTree != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgTree, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgTree, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === "railHorizontal" && this.imgRailHorizontal != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgRailHorizontal, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgRailHorizontal, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                if (this.matrix[row][col] === 1 && this.imgGrass != null) {
-                    if (this.mousehover) {
-                        this.outlineContext.drawImage(this.imgGrass, (2 + (col * (this.cellSize + this.padding))),
-                            (2 + (row * (this.cellSize + this.padding))),
-                            this.cellSize - 4, this.cellSize - 4);
-                    } else {
-                        this.outlineContext.drawImage(this.imgGrass, (col * (this.cellSize + this.padding)),
-                            (row * (this.cellSize + this.padding)),
-                            this.cellSize, this.cellSize);
-                    }
-                }
-                this.outlineContext.fillStyle = "#000000"
-                this.outlineContext.fillRect(trainCol * (this.cellSize + this.padding),
-                    trainRow * (this.cellSize + this.padding),
-                    this.cellSize, this.cellSize);
-
-                coinCountElement.innerText = coins;
-                passengerCount.innerText = passenger;
+            return this.context;
+        }
 
 
+        render()
+        {
+
+            const w = (this.cellSize + this.padding) * this.matrix[0].length - this.padding;
+            const h = (this.cellSize + this.padding) * this.matrix.length - this.padding;
+
+            this.outlineContext.canvas.width = w;
+            this.outlineContext.canvas.height = h;
+
+            const center = this.#getCenter(w, h);
+            // this.outlineContext.canvas.style.marginLeft = center.x
+            // this.outlineContext.canvas.style.marginTop = center.y;
+            // this.topContext.canvas.style.marginLeft = center.x
+            // this.topContext.canvas.style.marginTop = center.y;
+
+            for (let row = 0; row < this.matrix.length; row++) {
+                for (let col = 0; col < this.matrix[row].length; col++) {
+                    this.mousehover = rownow === row && colnow === col;
+
+                    const cellType = this.matrix[row][col];
+
+                    if (cellType === 0) {
+                        this.outlineContext.fillStyle = "transparent";
+                    } else if (cellType === 3) {
+                        this.outlineContext.fillStyle = "#000000";
+                    } else if (this.imgMap[cellType] != null) {
+                        if (this.mousehover) {
+                            this.outlineContext.drawImage(
+                                this.imgMap[cellType],
+                                2 + col * (this.cellSize + this.padding),
+                                2 + row * (this.cellSize + this.padding),
+                                this.cellSize - 4,
+                                this.cellSize - 4
+                            );
+                        } else {
+                            this.outlineContext.drawImage(
+                                this.imgMap[cellType],
+                                col * (this.cellSize + this.padding),
+                                row * (this.cellSize + this.padding),
+                                this.cellSize,
+                                this.cellSize
+                            );
+                        }
+                    }
+
+                    if (cellType !== 1) {
+                        this.outlineContext.fillRect(
+                            trainCol * (this.cellSize + this.padding),
+                            trainRow * (this.cellSize + this.padding),
+                            this.cellSize,
+                            this.cellSize
+                        );
+                    }
+
+                    coinCountElement.innerText = coins;
+                    passengerCount.innerText = passenger;
+                }
             }
         }
-    }
 }
 
 const coinCountElement = document.getElementById('coin-count');
@@ -261,22 +187,6 @@ let lastClickCol = 0
 let gameBoard = []
 
 
-window.onload = function () {
-    gridSystem.imgGrass = document.getElementById("background");
-    gridSystem.imgRailVertical = document.getElementById("railVertical");
-    gridSystem.imgRailHorizontal = document.getElementById("railHorizontal");
-    gridSystem.imgRailTR = document.getElementById("railTR");
-    gridSystem.imgRailDR = document.getElementById("railDR");
-    gridSystem.imgRailLD = document.getElementById("railLD");
-    gridSystem.imgRailUL = document.getElementById("railUL");
-    gridSystem.imgRailRU = document.getElementById("railRU");
-    gridSystem.imgRailX = document.getElementById("railX");
-    gridSystem.imgRailTL = document.getElementById("railTL");
-    gridSystem.imgRailTU = document.getElementById("railTU");
-    gridSystem.imgRailTD = document.getElementById("railTD");
-    gridSystem.imgTree = document.getElementById("tree");
-    gridSystem.imgTrainStation = document.getElementById("trainStation");
-};
 
 //enum BoardType {
 //RH="",
@@ -349,6 +259,8 @@ let passenger = JSON.parse(localStorage.getItem("passenger")) ?? 0;
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
+
+let trainStation = ["redTrainStation","blueTrainStation","yellowTrainStation"]
 
 let railsInfo = [{
     left: false,
@@ -524,7 +436,7 @@ function checkRails(row, col) {
 }
 
 function checkStations(row, col) {
-    const left = col > 0 && gridSystem.matrix[row][col - 1] && gridSystem.matrix[row][col - 1] === "trainStation"
+    const left = col > 0 && gridSystem.matrix[row][col - 1] && trainStation.includes(gridSystem.matrix[row][col - 1])
     const right = col < gridSystem.matrix[row].length - 1 && gridSystem.matrix[row][col + 1] && gridSystem.matrix[row][col + 1] === "trainStation"
     const top = row > 0 && gridSystem.matrix[row - 1][col] && gridSystem.matrix[row - 1][col] === "trainStation"
     const down = row < gridSystem.matrix.length - 1 && gridSystem.matrix[row + 1][col] && gridSystem.matrix[row + 1][col] === "trainStation"
@@ -569,7 +481,7 @@ function railRotation(row, col) {
 
 function stationCheck() {
     if(checkStations(trainRow, trainCol)){
-
+        console.log(true)
     }
 
 }
