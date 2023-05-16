@@ -155,13 +155,8 @@ let trainState = "hold"
 let lastClickRow = 0
 let lastClickCol = 0
 let gameBoard = []
-
-
-//enum BoardType {
-//RH="",
-
-//}
-
+let audio = new Audio();
+audio.src = false;
 
 function create2DList(rows, cols) {
 
@@ -212,8 +207,7 @@ function create2DList(rows, cols) {
 }
 
 
-var
-    gameBoardJSON = localStorage.getItem("gameboard");
+var gameBoardJSON = localStorage.getItem("gameboard");
 
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
@@ -331,12 +325,14 @@ let railsInfo = [{
 
 const gridSystem = new GridSystem(gameBoard);
 
-function fps(){
+function fps() {
     gridSystem.render()
-    setTimeout(fps,16)
+    setTimeout(fps, 16)
 }
 
 function train() {
+    // Play the audio
+    audio.play();
     const firstObj = wayToGo[0];
     if (firstObj == undefined) {
         trainState = "hold"
@@ -384,7 +380,8 @@ function switchSquare(event) {
             railRotation(row, col)
 
         } else {
-            if (coins >= 10 && gridSystem.matrix[row][col] === 1) {
+            if (coins >= 10 && gridSystem.matrix[row][col] === 1 && buildmode != "delete") {
+                console.log("help")
                 gridSystem.matrix[row][col] = "railVertical"
                 railRotation(row, col)
                 if (lastClickCol !== col || lastClickRow !== row) {
@@ -460,61 +457,16 @@ function stationCheck() {
 
 }
 
-//trainRow links nach rechts
-function handleKeyPress(event) {
-    switch (event.keyCode) {
-        case 37: // links
-        function links() {
-            if (rails.includes(gridSystem.matrix[trainRow][trainCol - 1])) {
-                setTimeout(links, 50);      //60fps ca 16
-                gridSystem.matrix[trainRow][trainCol] = "railVertical"
-                trainCol--;
-                gridSystem.matrix[trainRow][trainCol] = 3;
-            }
-        }
+function getMousePos(canvas, evt) {
+    const rect = canvas.getBoundingClientRect(), // abs. size of element
+        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
+        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
 
-            links()
-            break;
-        case 38: // oben
-        function oben() {
-            if (rails.includes(gridSystem.matrix[trainRow - 1][trainCol])) {
-                setTimeout(oben, 50);      //60fps ca 16
-                gridSystem.matrix[trainRow][trainCol] = "railVertical"
-                trainRow--;
-                gridSystem.matrix[trainRow][trainCol] = 3;
-            }
-        }
-
-            oben()
-            break;
-        case 39: // rechts
-        function right() {
-            if (rails.includes(gridSystem.matrix[trainRow][trainCol + 1])) {
-                setTimeout(right, 50);      //60fps ca 16
-                gridSystem.matrix[trainRow][trainCol] = "railVertical"
-                trainCol++;
-                gridSystem.matrix[trainRow][trainCol] = 3;
-            }
-        }
-
-            right()
-            break;
-        case 40: // unten
-        function down() {
-            if (rails.includes(gridSystem.matrix[trainRow + 1][trainCol])) {
-                setTimeout(down, 50);      //60fps ca 16
-                gridSystem.matrix[trainRow][trainCol] = "railVertical"
-                trainRow++;
-                gridSystem.matrix[trainRow][trainCol] = 3;
-            }
-        }
-
-            down()
-            break;
+    return {
+        x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
+        y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
     }
-    //updatePosition()
 }
-
 
 document.addEventListener("keydown", function (event) {
     if (gamestate === "normal") {
@@ -551,17 +503,6 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
 
 window.addEventListener("contextmenu", e => e.preventDefault());
 
-function getMousePos(canvas, evt) {
-    const rect = canvas.getBoundingClientRect(), // abs. size of element
-        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
-        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
-
-    return {
-        x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-        y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
-    }
-}
-
 gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
     //const x = event.clientX - rect.left;
@@ -587,6 +528,10 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     }
 });
 
+audio.addEventListener('ended', function() {
+    audio.play()
+
+});
 
 function bfs(grid, startRow, startCol, targetRow, targetCol) {
     const numRows = grid.length;
@@ -641,11 +586,6 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
     return; // Return null if the target cell is not reachable
 }
 
-
-function animator(startPosX, startPosY, facing) {
-
-}
-
 function buttonClick() {
     if (gamestate === "build") {
         //gridSystem.cellSize = 20
@@ -659,7 +599,6 @@ function buttonClick() {
 
 
 }
-
 
 function save() {
     var gameBoardJSON = JSON.stringify(gameBoard);
