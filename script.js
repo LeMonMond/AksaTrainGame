@@ -19,6 +19,9 @@ class GridSystem {
         this.imgRailTU = new Image();
         this.imgRailTL = new Image();
         this.imgTree = new Image();
+        this.imgRedTrainStation = new Image();
+        this.imgBlueTrainStation = new Image();
+        this.imgYellowTrainStation = new Image();
         this.imgTrainStation = new Image();
         this.mousehover = false;
 
@@ -35,6 +38,9 @@ class GridSystem {
         this.imgRailTU.src = "railTU.png";
         this.imgRailTL.src = "railTL.png";
         this.imgTree.src = "tree(placeholder).png";
+        this.imgRedTrainStation.src = "redTrainStation.png"
+        this.imgBlueTrainStation.src = "blueTrainStation.png"
+        this.imgYellowTrainStation.src = "yellowTrainStation.png";
         this.imgTrainStation.src = "trainStation.png";
 
         this.imgMap = {
@@ -53,7 +59,10 @@ class GridSystem {
             railLD: this.imgRailLD,
             railDR: this.imgRailDR,
             tree: this.imgTree,
-            railHorizontal: this.imgRailHorizontal
+            railHorizontal: this.imgRailHorizontal,
+            redTrainStation: this.imgRedTrainStation,
+            blueTrainStation: this.imgBlueTrainStation,
+            yellowTrainStation: this.imgYellowTrainStation
         };
     }
 
@@ -143,7 +152,9 @@ class GridSystem {
 }
 
 const coinCountElement = document.getElementById('coin-count');
-const passengerCount = document.getElementById('passenger-count');
+const passengerCount = document.getElementById('blue-passenger-count');
+const passengerCountRed = document.getElementById('red-passenger-count');
+const passengerCountYellow = document.getElementById('yellow-passenger-count');
 let boardX = window.innerWidth * 0.5
 let boardY = window.innerHeight * 0.5
 let rownow = 0
@@ -156,7 +167,7 @@ let lastClickRow = 0
 let lastClickCol = 0
 let gameBoard = []
 let audio = new Audio();
-audio.src = false;
+audio.src = "Sound/track 1.mp3";
 
 function create2DList(rows, cols) {
 
@@ -186,7 +197,17 @@ function create2DList(rows, cols) {
         const index = Math.floor(Math.random() * allowedPositions.length);
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
-        gameBoard[i][j] = "trainStation";
+        let randomStation = Math.floor(Math.random() * 3);
+        if(randomStation == 0){
+            gameBoard[i][j] = "redTrainStation";
+        }
+        if(randomStation == 1){
+            gameBoard[i][j] = "blueTrainStation";
+        }
+        if(randomStation == 2){
+            gameBoard[i][j] = "yellowTrainStation";
+        }
+
         numTwos++;
 
         // remove positions that have already been used
@@ -227,7 +248,7 @@ let passenger = JSON.parse(localStorage.getItem("passenger")) ?? 0;
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
 
-let trainStation = ["redTrainStation", "blueTrainStation", "yellowTrainStation"]
+let trainStation = ["redTrainStation", "blueTrainStation", "yellowTrainStation","trainStation"]
 
 let railsInfo = [{
     left: false,
@@ -331,8 +352,6 @@ function fps() {
 }
 
 function train() {
-    // Play the audio
-    audio.play();
     const firstObj = wayToGo[0];
     if (firstObj == undefined) {
         trainState = "hold"
@@ -353,6 +372,7 @@ function train() {
 }
 
 fps()
+audio.play();
 
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
@@ -406,17 +426,37 @@ function checkRails(row, col) {
     return {left, right, top, down};
 }
 
-function checkStations(row, col) {
-    const left = col > 0 && gridSystem.matrix[row][col - 1] && trainStation.includes(gridSystem.matrix[row][col - 1])
-    const right = col < gridSystem.matrix[row].length - 1 && gridSystem.matrix[row][col + 1] && gridSystem.matrix[row][col + 1] === "trainStation"
-    const top = row > 0 && gridSystem.matrix[row - 1][col] && gridSystem.matrix[row - 1][col] === "trainStation"
-    const down = row < gridSystem.matrix.length - 1 && gridSystem.matrix[row + 1][col] && gridSystem.matrix[row + 1][col] === "trainStation"
-    if (left || right || top || down) {
-        return true
-    } else {
-        return false
+function checkStations(grid, row, col) {
+    const directions = [
+        [0, 1],   // Rechts
+        [0, -1],  // Links
+        [1, 0],   // Unten
+        [-1, 0]   // Oben
+    ];
+
+    const stations = ['redTrainStation', 'blueTrainStation', 'yellowTrainStation'];
+
+    for (let i = 0; i < directions.length; i++) {
+        const [dx, dy] = directions[i];
+        const newRow = row + dx;
+        const newCol = col + dy;
+
+        if (
+            newRow < 0 || newRow >= grid.length ||
+            newCol < 0 || newCol >= grid[0].length
+        ) {
+            continue;  // Ignoriere außerhalb des Gitters
+        }
+
+        const station = grid[newRow][newCol];
+        if (stations.includes(station)) {
+            return [true, station];
+        }
     }
+
+    return [false, null];
 }
+
 
 
 function changeRail(row, col) {
@@ -451,10 +491,7 @@ function railRotation(row, col) {
 
 
 function stationCheck() {
-    if (checkStations(trainRow, trainCol)) {
-        console.log(true)
-    }
-
+    console.log(checkStations(gridSystem.matrix,trainRow, trainCol))
 }
 
 function getMousePos(canvas, evt) {
@@ -617,6 +654,8 @@ function coin() {
     coins += 1000
     passenger += 1
 }
+
+
 
 
 
