@@ -497,14 +497,30 @@ function railRotation(row, col) {
 function stationCheck() {
     let station = checkStations(gridSystem.matrix,trainRow, trainCol)
     console.log(station)
+
     if(station[1] === "redTrainStation"){
-       redPassenger += 1
+        if(redPassenger <= 5){
+            redPassenger += 1
+        }
+        coins = coins + bluePassenger +yellowPassenger
+        bluePassenger = 0
+        yellowPassenger = 0
     }
     if(station[1] === "blueTrainStation"){
-        bluePassenger += 1
+        if(bluePassenger <= 5){
+            bluePassenger += 1
+        }
+        coins = coins + redPassenger +yellowPassenger
+        redPassenger = 0
+        yellowPassenger = 0
     }
     if(station[1] === "yellowTrainStation"){
-        yellowPassenger += 1
+        if(yellowPassenger <= 5){
+            yellowPassenger += 1
+        }
+        coins = coins + bluePassenger + redPassenger
+        bluePassenger = 0
+        redPassenger = 0
     }
 }
 
