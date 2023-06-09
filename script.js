@@ -145,14 +145,16 @@ class GridSystem {
                 }
 
                 coinCountElement.innerText = coins;
-                passengerCount.innerText = passenger;
+                passengerCountBlue.innerText = bluePassenger;
+                passengerCountRed.innerText = redPassenger;
+                passengerCountYellow.innerText = yellowPassenger;
             }
         }
     }
 }
 
 const coinCountElement = document.getElementById('coin-count');
-const passengerCount = document.getElementById('blue-passenger-count');
+const passengerCountBlue = document.getElementById('blue-passenger-count');
 const passengerCountRed = document.getElementById('red-passenger-count');
 const passengerCountYellow = document.getElementById('yellow-passenger-count');
 let boardX = window.innerWidth * 0.5
@@ -214,7 +216,6 @@ function create2DList(rows, cols) {
         allowedPositions.splice(index, 1);
     }
 
-
     // fill remaining cells with 1's
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -226,6 +227,7 @@ function create2DList(rows, cols) {
     }
     return gameBoard;
 }
+
 
 
 var gameBoardJSON = localStorage.getItem("gameboard");
@@ -243,7 +245,9 @@ if (gameBoardJSON) {
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
-let passenger = JSON.parse(localStorage.getItem("passenger")) ?? 0;
+let redPassenger = JSON.parse(localStorage.getItem("redPassenger")) ?? 0;
+let bluePassenger = JSON.parse(localStorage.getItem("bluePassenger")) ?? 0;
+let yellowPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 0;
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
@@ -491,7 +495,17 @@ function railRotation(row, col) {
 
 
 function stationCheck() {
-    console.log(checkStations(gridSystem.matrix,trainRow, trainCol))
+    let station = checkStations(gridSystem.matrix,trainRow, trainCol)
+    console.log(station)
+    if(station[1] === "redTrainStation"){
+       redPassenger += 1
+    }
+    if(station[1] === "blueTrainStation"){
+        bluePassenger += 1
+    }
+    if(station[1] === "yellowTrainStation"){
+        yellowPassenger += 1
+    }
 }
 
 function getMousePos(canvas, evt) {
@@ -643,7 +657,9 @@ function save() {
     localStorage.setItem("trainCol", trainCol);
     localStorage.setItem("trainRow", trainRow);
     localStorage.setItem("coins", coins);
-    localStorage.setItem("passenger", passenger);
+    localStorage.setItem("bluePassenger", bluePassenger);
+    localStorage.setItem("redPassenger", redPassenger);
+    localStorage.setItem("yellowPassenger", yellowPassenger);
     setTimeout(save, 60000)
     console.log(new Date(), "Game saved")
 }
@@ -652,7 +668,6 @@ save()
 
 function coin() {
     coins += 1000
-    passenger += 1
 }
 
 
