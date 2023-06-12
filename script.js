@@ -201,13 +201,13 @@ function create2DList(rows, cols) {
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
         let randomStation = Math.floor(Math.random() * 3);
-        if(randomStation == 0){
+        if (randomStation == 0) {
             gameBoard[i][j] = "redTrainStation";
         }
-        if(randomStation == 1){
+        if (randomStation == 1) {
             gameBoard[i][j] = "blueTrainStation";
         }
-        if(randomStation == 2){
+        if (randomStation == 2) {
             gameBoard[i][j] = "yellowTrainStation";
         }
 
@@ -255,7 +255,7 @@ document.getElementById("upgrade").innerText = "Upgrade Passenger + 1(" + upgrad
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
 
-let trainStation = ["redTrainStation", "blueTrainStation", "yellowTrainStation","trainStation"]
+let trainStation = ["redTrainStation", "blueTrainStation", "yellowTrainStation", "trainStation"]
 
 let railsInfo = [{
     left: false,
@@ -379,7 +379,7 @@ function train() {
 }
 
 fps()
-audio.play()
+
 
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
@@ -464,7 +464,6 @@ function checkStations(grid, row, col) {
 }
 
 
-
 function changeRail(row, col) {
     let {left, right, top, down} = checkRails(row, col);
 
@@ -497,27 +496,27 @@ function railRotation(row, col) {
 
 
 function stationCheck() {
-    let station = checkStations(gridSystem.matrix,trainRow, trainCol)
+    let station = checkStations(gridSystem.matrix, trainRow, trainCol)
     //console.log(station)
 
-    if(station[1] === "redTrainStation"){
-        if(redPassenger <= maxPassenger-1){
+    if (station[1] === "redTrainStation") {
+        if (redPassenger <= maxPassenger - 1) {
             redPassenger = maxPassenger
         }
-        coins = coins + bluePassenger +yellowPassenger
+        coins = coins + bluePassenger + yellowPassenger
         bluePassenger = 0
         yellowPassenger = 0
     }
-    if(station[1] === "blueTrainStation"){
-        if(bluePassenger <= maxPassenger-1){
+    if (station[1] === "blueTrainStation") {
+        if (bluePassenger <= maxPassenger - 1) {
             bluePassenger = maxPassenger
         }
-        coins = coins + redPassenger +yellowPassenger
+        coins = coins + redPassenger + yellowPassenger
         redPassenger = 0
         yellowPassenger = 0
     }
-    if(station[1] === "yellowTrainStation"){
-        if(yellowPassenger <= maxPassenger-1){
+    if (station[1] === "yellowTrainStation") {
+        if (yellowPassenger <= maxPassenger - 1) {
             yellowPassenger = maxPassenger
         }
         coins = coins + bluePassenger + redPassenger
@@ -570,6 +569,13 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
 
 });
 
+
+window.addEventListener("click", () => {
+    if (audio.paused) {
+        audio.play()
+    }
+});
+
 window.addEventListener("contextmenu", e => e.preventDefault());
 
 gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
@@ -597,7 +603,7 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     }
 });
 
-audio.addEventListener('ended', function() {
+audio.addEventListener('ended', function () {
     audio.play()
 
 });
@@ -689,7 +695,7 @@ function save() {
 save()
 
 function upgrade() {
-    if (coins >= upgradePrice ){
+    if (coins >= upgradePrice) {
         coins -= upgradePrice
         maxPassenger += 1
         upgradePrice *= 2
