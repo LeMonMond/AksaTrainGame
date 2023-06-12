@@ -167,8 +167,10 @@ let wayToGo = []
 let trainState = "hold"
 let lastClickRow = 0
 let lastClickCol = 0
+let maxPassenger = 1
 let gameBoard = []
 let audio = new Audio();
+let upgradePrice =  5
 audio.src = "Sound/track 1.mp3";
 
 function create2DList(rows, cols) {
@@ -352,7 +354,7 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render()
-    setTimeout(fps, 16)
+    setTimeout(fps, 30)
 }
 
 function train() {
@@ -499,24 +501,24 @@ function stationCheck() {
     console.log(station)
 
     if(station[1] === "redTrainStation"){
-        if(redPassenger <= 5){
-            redPassenger += 1
+        if(redPassenger <= maxPassenger-1){
+            redPassenger = maxPassenger
         }
         coins = coins + bluePassenger +yellowPassenger
         bluePassenger = 0
         yellowPassenger = 0
     }
     if(station[1] === "blueTrainStation"){
-        if(bluePassenger <= 5){
-            bluePassenger += 1
+        if(bluePassenger <= maxPassenger-1){
+            bluePassenger = maxPassenger
         }
         coins = coins + redPassenger +yellowPassenger
         redPassenger = 0
         yellowPassenger = 0
     }
     if(station[1] === "yellowTrainStation"){
-        if(yellowPassenger <= 5){
-            yellowPassenger += 1
+        if(yellowPassenger <= maxPassenger-1){
+            yellowPassenger = maxPassenger
         }
         coins = coins + bluePassenger + redPassenger
         bluePassenger = 0
@@ -682,8 +684,12 @@ function save() {
 
 save()
 
-function coin() {
-    coins += 1000
+function upgrade() {
+    if (coins >= upgradePrice ){
+        coins -= upgradePrice
+        maxPassenger += 1
+        upgradePrice *= 2
+    }
 }
 
 
