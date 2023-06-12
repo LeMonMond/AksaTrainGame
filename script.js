@@ -247,7 +247,7 @@ let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
 let upgradePrice = JSON.parse(localStorage.getItem("upgradePrice")) ?? 5;
-let maxPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 1;
+let maxPassenger = JSON.parse(localStorage.getItem("maxPassenger")) ?? 1;
 let redPassenger = JSON.parse(localStorage.getItem("redPassenger")) ?? 0;
 let bluePassenger = JSON.parse(localStorage.getItem("bluePassenger")) ?? 0;
 let yellowPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 0;
@@ -692,6 +692,7 @@ function upgrade() {
         coins -= upgradePrice
         maxPassenger += 1
         upgradePrice *= 2
+        document.getElementById("upgrade").innerText = "Upgrade Passenger + 1(" + upgradePrice + ")";
     }
 }
 
