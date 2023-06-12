@@ -167,10 +167,9 @@ let wayToGo = []
 let trainState = "hold"
 let lastClickRow = 0
 let lastClickCol = 0
-let maxPassenger = 1
 let gameBoard = []
+//let upgradePrice = 5
 let audio = new Audio();
-let upgradePrice =  5
 audio.src = "Sound/track 1.mp3";
 
 function create2DList(rows, cols) {
@@ -247,6 +246,8 @@ if (gameBoardJSON) {
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
+let upgradePrice = JSON.parse(localStorage.getItem("upgradePrice")) ?? 5;
+let maxPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 1;
 let redPassenger = JSON.parse(localStorage.getItem("redPassenger")) ?? 0;
 let bluePassenger = JSON.parse(localStorage.getItem("bluePassenger")) ?? 0;
 let yellowPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 0;
@@ -678,6 +679,8 @@ function save() {
     localStorage.setItem("bluePassenger", bluePassenger);
     localStorage.setItem("redPassenger", redPassenger);
     localStorage.setItem("yellowPassenger", yellowPassenger);
+    localStorage.setItem("upgradePrice", upgradePrice);
+    localStorage.setItem("maxPassenger", maxPassenger);
     setTimeout(save, 60000)
     console.log(new Date(), "Game saved")
 }
