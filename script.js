@@ -1,11 +1,13 @@
 class GridSystem {
+    // The constructor initializes several image objects, which are used to display different elements of the game board.
+    // These images are loaded from files. Finally, the constructor sets the size and padding of the game board, and initializes a mousehover property to false.
     constructor(matrix) {
         this.matrix = matrix;
         this.uiContext = this.#getContext(0, 0, "#000");
         this.outlineContext = this.#getContext(0, 0, "rgb(255,255,255)");
         this.topContext = this.#getContext(0, 0, "#000000", true);
-        this.cellSize = window.innerWidth / 50;   //10
-        this.padding = 0;     //3
+        this.cellSize = window.innerWidth / 50;
+        this.padding = 0;
         this.imgGrass = new Image();
         this.imgRailVertical = new Image();
         this.imgRailHorizontal = new Image();
@@ -66,6 +68,7 @@ class GridSystem {
         };
     }
 
+    // This function returns the center of the screen, which is used to position the game board.
     #getCenter(w, h) {
         return {
             x: window.innerWidth / 2 - w / 2 + "px",
@@ -73,25 +76,20 @@ class GridSystem {
         };
     }
 
+    // This function creates a canvas element and returns its context.
     #getContext(w, h, color = "#000000", isTransparent = false) {
         this.canvas = document.getElementById("canvas");
         this.context = this.canvas.getContext("2d");
-        //this.width = this.canvas.width = 0;
-        //this.height = this.canvas.height = 0;
-        //this.canvas.style.position = "absolute";
         this.canvas.style.background = color;
         if (isTransparent) {
             this.canvas.style.backgroundColor = "transparent";
         }
-        //const center = this.#getCenter(w, h);
-        //this.canvas.style.marginLeft = center.x
-        //this.canvas.style.marginTop = center.y;
-        //document.body.appendChild(this.canvas);
 
         return this.context;
     }
 
-
+    // This function draws the game board. It loops through the matrix and draws the appropriate image for each cell.
+    // This function is called every time the game board is updated. Approximately 30 times per second.
     render() {
         const w = (this.cellSize + this.padding) * this.matrix[0].length - this.padding;
         const h = (this.cellSize + this.padding) * this.matrix.length - this.padding;
@@ -100,10 +98,6 @@ class GridSystem {
         this.outlineContext.canvas.height = h;
 
         const center = this.#getCenter(w, h);
-        // this.outlineContext.canvas.style.marginLeft = center.x
-        // this.outlineContext.canvas.style.marginTop = center.y;
-        // this.topContext.canvas.style.marginLeft = center.x
-        // this.topContext.canvas.style.marginTop = center.y;
 
         for (let row = 0; row < this.matrix.length; row++) {
             for (let col = 0; col < this.matrix[row].length; col++) {
@@ -153,6 +147,7 @@ class GridSystem {
     }
 }
 
+// Initialize variables and constants
 const coinCountElement = document.getElementById('coin-count');
 const passengerCountBlue = document.getElementById('blue-passenger-count');
 const passengerCountRed = document.getElementById('red-passenger-count');
@@ -168,13 +163,13 @@ let trainState = "hold"
 let lastClickRow = 0
 let lastClickCol = 0
 let gameBoard = []
-//let upgradePrice = 5
 let audio = new Audio();
 audio.src = "Sound/track.mp3";
 
+// Generates random game board with trees and stations
 function create2DList(rows, cols) {
 
-    // create an array of allowed positions for 3's
+    // Create an array of allowed positions for 3's
     const allowedPositions = [];
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -182,21 +177,21 @@ function create2DList(rows, cols) {
         }
     }
 
-    // place 3's at random positions while maintaining distance constraint
+    // Place trees at random positions while maintaining distance constraint
     let numThrees = 0;
-    while (numThrees < Math.floor(rows * cols / 5)) { // set 3's to be around 20% of total cells
+    while (numThrees < Math.floor(rows * cols / 5)) { // Set trees to be around 20% of total cells
         const index = Math.floor(Math.random() * allowedPositions.length);
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
         gameBoard[i][j] = "tree";
         numThrees++;
 
-        // remove positions that have already been used
+        // Remove positions that have already been used
         allowedPositions.splice(index, 1);
     }
 
     let numTwos = 0;
-    while (numTwos < Math.floor(rows * cols / 50)) { // set 3's to be around 20% of total cells
+    while (numTwos < Math.floor(rows * cols / 50)) { // Set stations to be around 20% of total cells
         const index = Math.floor(Math.random() * allowedPositions.length);
         const [i, j] = allowedPositions[index];
         gameBoard[i] = gameBoard[i] || [];
@@ -213,11 +208,11 @@ function create2DList(rows, cols) {
 
         numTwos++;
 
-        // remove positions that have already been used
+        // Remove positions that have already been used
         allowedPositions.splice(index, 1);
     }
 
-    // fill remaining cells with 1's
+    // Fill remaining cells with grass
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
             if (!gameBoard[i] || !gameBoard[i][j]) {
@@ -229,19 +224,20 @@ function create2DList(rows, cols) {
     return gameBoard;
 }
 
-
+// Load gameboard from local storage
 var gameBoardJSON = localStorage.getItem("gameboard");
 
 if (gameBoardJSON) {
     gameBoard = JSON.parse(gameBoardJSON);
 } else {
+    // If no gameboard is found, create a new one
     create2DList(window.innerWidth / 50,
         window.innerHeight / 15
     )
 
 }
 
-
+// Load other data from local storage or set to default
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
 let coins = JSON.parse(localStorage.getItem("coins")) ?? 500;
@@ -252,6 +248,7 @@ let bluePassenger = JSON.parse(localStorage.getItem("bluePassenger")) ?? 0;
 let yellowPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 0;
 document.getElementById("upgrade").innerText = "Upgrade Passenger + 1(" + upgradePrice + ")";
 
+// Initalize track and train objects
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
 
@@ -353,19 +350,21 @@ let railsInfo = [{
 
 const gridSystem = new GridSystem(gameBoard);
 
+// Main game loop
 function fps() {
     gridSystem.render()
     setTimeout(fps, 60)
 }
 
+// Updates the location of the train
 function train() {
     const firstObj = wayToGo[0];
     if (firstObj == undefined) {
         trainState = "hold"
         return
     }
-    const a = firstObj.row; // 1
-    const b = firstObj.col; // 2
+    const a = firstObj.row;
+    const b = firstObj.col;
     trainCol = b;
     trainRow = a;
     wayToGo.shift();
@@ -378,9 +377,8 @@ function train() {
 
 }
 
-fps()
 
-
+// Main event listener for mouse clicks, handles building, deleting tracks and train movement
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
     const rowHeight = gridSystem.padding + gridSystem.cellSize;
@@ -397,9 +395,6 @@ function switchSquare(event) {
             col
         )
         train()
-        //trainCol = way[0]
-        //trainRow = way[1]
-
     }
     if (gamestate === "build") {
         if (buildmode === "delete" && rails.includes(gridSystem.matrix[row][col])) {
@@ -423,6 +418,7 @@ function switchSquare(event) {
 }
 
 
+// Checks if a rail is near the specified square and in the rails array
 function checkRails(row, col) {
     const left = col > 0 && gridSystem.matrix[row][col - 1] && rails.includes(gridSystem.matrix[row][col - 1]);
     const right = col < gridSystem.matrix[row].length - 1 && gridSystem.matrix[row][col + 1] && rails.includes(gridSystem.matrix[row][col + 1]);
@@ -432,12 +428,13 @@ function checkRails(row, col) {
     return {left, right, top, down};
 }
 
+// Check if the train is near a station and if so, what station
 function checkStations(grid, row, col) {
     const directions = [
-        [0, 1],   // Rechts
-        [0, -1],  // Links
-        [1, 0],   // Unten
-        [-1, 0]   // Oben
+        [0, 1],   // Right
+        [0, -1],  // Left
+        [1, 0],   // Bottom
+        [-1, 0]   // Top
     ];
 
     const stations = ['redTrainStation', 'blueTrainStation', 'yellowTrainStation'];
@@ -451,7 +448,7 @@ function checkStations(grid, row, col) {
             newRow < 0 || newRow >= grid.length ||
             newCol < 0 || newCol >= grid[0].length
         ) {
-            continue;  // Ignoriere außerhalb des Gitters
+            continue;  // Ignore if out of bounds
         }
 
         const station = grid[newRow][newCol];
@@ -464,6 +461,7 @@ function checkStations(grid, row, col) {
 }
 
 
+// Put the right rail on the right square
 function changeRail(row, col) {
     let {left, right, top, down} = checkRails(row, col);
 
@@ -474,6 +472,7 @@ function changeRail(row, col) {
     });
 }
 
+// Checks the rails around the clicked rail
 function railRotation(row, col) {
     let {left, right, top, down} = checkRails(row, col);
 
@@ -495,9 +494,9 @@ function railRotation(row, col) {
 }
 
 
+// If the train is on a station, passengers are loaded and unloaded
 function stationCheck() {
     let station = checkStations(gridSystem.matrix, trainRow, trainCol)
-    //console.log(station)
 
     if (station[1] === "redTrainStation") {
         if (redPassenger <= maxPassenger - 1) {
@@ -525,23 +524,21 @@ function stationCheck() {
     }
 }
 
+
+// This function is used to get the mouse position on the canvas
 function getMousePos(canvas, evt) {
-    const rect = canvas.getBoundingClientRect(), // abs. size of element
-        scaleX = canvas.width / rect.width,    // relationship bitmap vs. element for x
-        scaleY = canvas.height / rect.height;  // relationship bitmap vs. element for y
+    const rect = canvas.getBoundingClientRect(),
+        scaleX = canvas.width / rect.width,
+        scaleY = canvas.height / rect.height;
 
     return {
-        x: (evt.clientX - rect.left) * scaleX,   // scale mouse coordinates after they have
-        y: (evt.clientY - rect.top) * scaleY     // been adjusted to be relative to element
+        x: (evt.clientX - rect.left) * scaleX,
+        y: (evt.clientY - rect.top) * scaleY
     }
 }
 
-document.addEventListener("keydown", function (event) {
-    if (gamestate === "normal") {
-        //handleKeyPress(event)
-    }
-});
-//error
+
+// Handle mouse clicks, destinquishing between left and right click
 gridSystem.outlineContext.canvas.addEventListener('mousedown', function (event) {
     if (event.buttons == 1) {
         event.preventDefault();
@@ -555,6 +552,7 @@ gridSystem.outlineContext.canvas.addEventListener('mousedown', function (event) 
     }
 });
 
+// Handle mouse movement while the mouse is clicked, destinquishing between left and right click
 gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) {
     if (event.buttons == 1) {
         event.preventDefault();
@@ -569,27 +567,26 @@ gridSystem.outlineContext.canvas.addEventListener('mousemove', function (event) 
 
 });
 
-
+// Browser security prevents audio from playing without user interaction
+// This event listener plays the audio when the user clicks anywhere on the page
 window.addEventListener("click", () => {
     if (audio.paused) {
         audio.play()
     }
 });
 
+// Prevents the context menu from appearing when right clicking
 window.addEventListener("contextmenu", e => e.preventDefault());
 
+// Highlights the square the mouse is currently hovering over
 gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     const rect = gridSystem.outlineContext.canvas.getBoundingClientRect();
-    //const x = event.clientX - rect.left;
-    //const y = event.clientY - rect.top;
-    //console.log(x,y);
-
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
 
 
     const rowHeight = gridSystem.padding + gridSystem.cellSize;
     const colWidth = gridSystem.padding + gridSystem.cellSize;
-    //console.log(mousePos);
+
     const row = Math.floor(mousePos.y / rowHeight);
     const col = Math.floor(mousePos.x / colWidth);
 
@@ -599,15 +596,16 @@ gridSystem.outlineContext.canvas.addEventListener("mousemove", (event) => {
     if (rowFraction < 1 && colFraction < 1) {
         rownow = row;
         colnow = col;
-        //console.log(`Kästchen bei [${rownow},${colnow}] geklickt.`);
     }
 });
 
+// If the audio is finished, play it again (endless loop)
 audio.addEventListener('ended', function () {
     audio.play()
 
 });
 
+// This function searches for the shortest path between two cells in a grid using Breadth First Search (BFS)
 function bfs(grid, startRow, startCol, targetRow, targetCol) {
     const numRows = grid.length;
     const numCols = grid[0].length;
@@ -637,7 +635,7 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
 
     // Perform BFS
     while (queue.length > 0) {
-        const curr = queue.shift(); // Dequeue the first cell in the queue
+        const curr = queue.shift(); // Remove the first cell in the queue
         const {row, col, way} = curr[curr.length - 1]; // Get the current cell and its path
         if (row === targetRow && col === targetCol) { // Check if the target cell is reached
             wayToGo = way
@@ -661,15 +659,12 @@ function bfs(grid, startRow, startCol, targetRow, targetCol) {
     return; // Return null if the target cell is not reachable
 }
 
+// Switches the build/normale mode
 function buttonClick() {
     if (gamestate === "build") {
-        //gridSystem.cellSize = 20
-        //gridSystem.padding = 0
         gamestate = "normal"
         document.getElementById("mode").innerText = "Switch Mode(" + gamestate + ")";
     } else {
-        //gridSystem.cellSize = 17
-        //gridSystem.padding = 3
         gamestate = "build"
         document.getElementById("mode").innerText = "Switch Mode(" + gamestate + ")";
     }
@@ -677,6 +672,7 @@ function buttonClick() {
 
 }
 
+// Save game to local storage including gameboard and all relevant variables every minute
 function save() {
     var gameBoardJSON = JSON.stringify(gameBoard);
     localStorage.setItem("gameboard", gameBoardJSON);
@@ -692,8 +688,7 @@ function save() {
     console.log(new Date(), "Game saved")
 }
 
-save()
-
+// Increase maximum number of passengers when upgrade button is clicked
 function upgrade() {
     if (coins >= upgradePrice) {
         coins -= upgradePrice
@@ -704,12 +699,7 @@ function upgrade() {
 }
 
 
-
-
-
-
-
-
-
-
-
+// Start the game loop
+fps()
+// Start the save loop and save the game the first time
+save()
