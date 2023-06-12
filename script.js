@@ -244,12 +244,13 @@ if (gameBoardJSON) {
 
 let trainRow = JSON.parse(localStorage.getItem("trainRow")) ?? 5;
 let trainCol = JSON.parse(localStorage.getItem("trainCol")) ?? 5;
-let coins = JSON.parse(localStorage.getItem("coins")) ?? 100;
+let coins = JSON.parse(localStorage.getItem("coins")) ?? 500;
 let upgradePrice = JSON.parse(localStorage.getItem("upgradePrice")) ?? 5;
 let maxPassenger = JSON.parse(localStorage.getItem("maxPassenger")) ?? 1;
 let redPassenger = JSON.parse(localStorage.getItem("redPassenger")) ?? 0;
 let bluePassenger = JSON.parse(localStorage.getItem("bluePassenger")) ?? 0;
 let yellowPassenger = JSON.parse(localStorage.getItem("yellowPassenger")) ?? 0;
+document.getElementById("upgrade").innerText = "Upgrade Passenger + 1(" + upgradePrice + ")";
 
 
 let rails = ["railVertical", "railHorizontal", "railDR", "railTR", "railLD", "railUL", "railRU", "railX", "railTL", "railTU", "railTD"]
@@ -354,7 +355,7 @@ const gridSystem = new GridSystem(gameBoard);
 
 function fps() {
     gridSystem.render()
-    setTimeout(fps, 30)
+    setTimeout(fps, 60)
 }
 
 function train() {
@@ -369,7 +370,7 @@ function train() {
     trainRow = a;
     wayToGo.shift();
     if (wayToGo.length > 0) {
-        setTimeout(train, 55)
+        setTimeout(train, 40)
     } else {
         trainState = "hold"
         stationCheck()
@@ -378,7 +379,7 @@ function train() {
 }
 
 fps()
-audio.play();
+audio.play()
 
 function switchSquare(event) {
     let mousePos = getMousePos(gridSystem.outlineContext.canvas, event);
@@ -407,7 +408,6 @@ function switchSquare(event) {
 
         } else {
             if (coins >= 10 && gridSystem.matrix[row][col] === 1 && buildmode != "delete") {
-                console.log("help")
                 gridSystem.matrix[row][col] = "railVertical"
                 railRotation(row, col)
                 if (lastClickCol !== col || lastClickRow !== row) {
@@ -498,7 +498,7 @@ function railRotation(row, col) {
 
 function stationCheck() {
     let station = checkStations(gridSystem.matrix,trainRow, trainCol)
-    console.log(station)
+    //console.log(station)
 
     if(station[1] === "redTrainStation"){
         if(redPassenger <= maxPassenger-1){
