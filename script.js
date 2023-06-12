@@ -230,7 +230,6 @@ function create2DList(rows, cols) {
 }
 
 
-
 var gameBoardJSON = localStorage.getItem("gameboard");
 
 if (gameBoardJSON) {
