@@ -661,10 +661,12 @@ function buttonClick() {
         //gridSystem.cellSize = 20
         //gridSystem.padding = 0
         gamestate = "normal"
+        document.getElementById("mode").innerText = "Switch Mode(" + gamestate + ")";
     } else {
         //gridSystem.cellSize = 17
         //gridSystem.padding = 3
         gamestate = "build"
+        document.getElementById("mode").innerText = "Switch Mode(" + gamestate + ")";
     }
 
 
