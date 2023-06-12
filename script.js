@@ -25,23 +25,23 @@ class GridSystem {
         this.imgTrainStation = new Image();
         this.mousehover = false;
 
-        this.imgGrass.src = "grass.png";
-        this.imgRailVertical.src = "railVertical.png";
-        this.imgRailHorizontal.src = "railHorizontal.png";
-        this.imgRailTR.src = "railTR.png";
-        this.imgRailDR.src = "railDR.png";
-        this.imgRailLD.src = "railLD.png";
-        this.imgRailUL.src = "railUL.png";
-        this.imgRailRU.src = "railRU.png";
-        this.imgRailX.src = "railX.png";
-        this.imgRailTD.src = "railTD.png";
-        this.imgRailTU.src = "railTU.png";
-        this.imgRailTL.src = "railTL.png";
-        this.imgTree.src = "tree(placeholder).png";
-        this.imgRedTrainStation.src = "redTrainStation.png"
-        this.imgBlueTrainStation.src = "blueTrainStation.png"
-        this.imgYellowTrainStation.src = "yellowTrainStation.png";
-        this.imgTrainStation.src = "trainStation.png";
+        this.imgGrass.src = "Images/grass.png";
+        this.imgRailVertical.src = "Images/railVertical.png";
+        this.imgRailHorizontal.src = "Images/railHorizontal.png";
+        this.imgRailTR.src = "Images/railTR.png";
+        this.imgRailDR.src = "Images/railDR.png";
+        this.imgRailLD.src = "Images/railLD.png";
+        this.imgRailUL.src = "Images/railUL.png";
+        this.imgRailRU.src = "Images/railRU.png";
+        this.imgRailX.src = "Images/railX.png";
+        this.imgRailTD.src = "Images/railTD.png";
+        this.imgRailTU.src = "Images/railTU.png";
+        this.imgRailTL.src = "Images/railTL.png";
+        this.imgTree.src = "Images/tree(placeholder).png";
+        this.imgRedTrainStation.src = "Images/redTrainStation.png"
+        this.imgBlueTrainStation.src = "Images/blueTrainStation.png"
+        this.imgYellowTrainStation.src = "Images/yellowTrainStation.png";
+        this.imgTrainStation.src = "Images/trainStation.png";
 
         this.imgMap = {
             0: null, // Transparent
@@ -170,7 +170,7 @@ let lastClickCol = 0
 let gameBoard = []
 //let upgradePrice = 5
 let audio = new Audio();
-audio.src = "Sound/track 1.mp3";
+audio.src = "Sound/track.mp3";
 
 function create2DList(rows, cols) {
 
